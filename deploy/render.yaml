@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: leverage-invest-api
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://leverageinvest.com
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  - type: static
+    name: leverage-invest-frontend
+    staticPublishPath: ./frontend
+    routes:
+      - type: rewrite
+        from: /*
+        to: /index.html
