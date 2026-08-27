@@ -199,3 +199,19 @@ class ContactMessage(Base):
     message = Column(Text, nullable=False)
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class CopyTradeConfig(Base):
+    __tablename__ = "copy_trade_configs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    master_account_id = Column(Integer, ForeignKey("mt5_accounts.id"), nullable=False)
+    follower_account_id = Column(Integer, ForeignKey("mt5_accounts.id"), nullable=False)
+    lot_multiplier = Column(Float, default=1.0)
+    copy_sl = Column(Boolean, default=True)
+    copy_tp = Column(Boolean, default=True)
+    max_lots = Column(Float, default=1.0)
+    min_lots = Column(Float, default=0.01)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)

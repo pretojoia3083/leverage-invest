@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.models.database import engine, Base
-from app.routes import auth, dashboard, robots, orders, contact, subscription
+from app.routes import auth, dashboard, robots, orders, contact, subscription, copy_trade
 from app.config import settings
 
 FRONTEND_DIR = Path(__file__).parent.parent.parent / "frontend"
@@ -27,6 +27,7 @@ app.include_router(robots.router)
 app.include_router(orders.router)
 app.include_router(contact.router)
 app.include_router(subscription.router)
+app.include_router(copy_trade.router)
 
 
 @app.on_event("startup")
