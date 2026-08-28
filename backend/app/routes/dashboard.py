@@ -11,15 +11,17 @@ router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
 
 @router.get("")
 def get_dashboard(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    accounts = db.query(MT5Account).filter(MT5Account.user_id == user.id).all()
+    all_accounts = db.query(MT5Account).filter(MT5Account.user_id == user.id).all()
     robots = db.query(RobotInstance).filter(RobotInstance.user_id == user.id).all()
     running = [r for r in robots if r.is_running]
 
-    total_balance = sum(a.balance for a in accounts)
-    total_equity = sum(a.equity for a in accounts)
-    total_profit_today = sum(a.profit_today for a in accounts)
-    total_profit_week = sum(a.profit_week for a in accounts)
-    total_profit_month = sum(a.profit_month for a in accounts)
+    real_accounts = [a for a in all_accounts if 'demo' not in (a.server or '').lower()]
+
+    total_balance = sum(a.balance for a in real_accounts)
+    total_equity = sum(a.equity for a in real_accounts)
+    total_profit_today = sum(a.profit_today for a in real_accounts)
+    total_profit_week = sum(a.profit_week for a in real_accounts)
+    total_profit_month = sum(a.profit_month for a in real_accounts)
     profit_pct = (total_profit_today / total_balance * 100) if total_balance > 0 else 0
 
     recent_orders = db.query(Order).filter(
@@ -38,7 +40,7 @@ def get_dashboard(user: User = Depends(get_current_user), db: Session = Depends(
             "profit_month": a.profit_month,
             "profit_pct": a.profit_pct,
             "is_connected": a.is_connected,
-        } for a in accounts],
+        } for a in real_accounts],
         "summary": {
             "total_balance": total_balance,
             "total_equity": total_equity,
