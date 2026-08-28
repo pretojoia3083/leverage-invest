@@ -39,7 +39,6 @@ class MT5ReportRequest(BaseModel):
 def report_trades(req: MT5ReportRequest, db: Session = Depends(get_db)):
     account = db.query(MT5Account).filter(
         MT5Account.account_number == req.account_number,
-        MT5Account.server == req.server,
     ).first()
 
     if not account:
@@ -50,6 +49,7 @@ def report_trades(req: MT5ReportRequest, db: Session = Depends(get_db)):
     account.profit_today = req.profit_today
     account.profit_week = req.profit_week
     account.is_connected = True
+    account.server = req.server
     account.last_update = datetime.utcnow()
     db.commit()
 

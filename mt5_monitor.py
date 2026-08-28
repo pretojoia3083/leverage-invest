@@ -1,83 +1,63 @@
 """
 LEVERAGE INVEST - MT5 Monitor
-Sincroniza contas MT5 com o dashboard em tempo real.
+Le a conta ativa no MT5 e sincroniza com o dashboard.
 
 Instalacao: pip install MetaTrader5 requests
-Execucao: python mt5_monitor.py
 Auto-start: Executar instalar_monitor.bat como administrador
 """
 
 import MetaTrader5 as mt5
 import requests
 import time
-import json
 import logging
 import sys
 import os
 from datetime import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_FILE = os.path.join(SCRIPT_DIR, 'mt5_monitor.log')
-CONFIG_FILE = os.path.join(SCRIPT_DIR, 'mt5_config.json')
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler(LOG_FILE, encoding='utf-8'),
+        logging.FileHandler(os.path.join(SCRIPT_DIR, 'mt5_monitor.log'), encoding='utf-8'),
     ]
 )
 log = logging.getLogger('MT5Monitor')
 
 API_BASE = "https://leverage-invest.onrender.com"
+MT5_PATH = r"C:\Program Files\Vantage International MT5\terminal64.exe"
 SYNC_INTERVAL = 10
-
-
-def load_config():
-    with open(CONFIG_FILE, 'r') as f:
-        return json.load(f)
 
 
 class MT5Monitor:
     def __init__(self):
         self.running = True
         self.stats = {"syncs": 0, "trades_reported": 0, "errors": 0}
-        self.last_positions = {}
-        self.config = load_config()
-        self.accounts = self.config["accounts"]
 
-    def connect_mt5(self):
-        if not mt5.initialize():
-            log.error("MT5 initialize failed: %s", mt5.last_error())
+    def connect(self):
+        if not mt5.initialize(path=MT5_PATH, timeout=15000):
+            log.error("MT5 falhou: %s", mt5.last_error())
             return False
-        info = mt5.terminal_info()
-        log.info("MT5 conectado: %s", info.name if info else "OK")
-        return True
-
-    def get_account_trades(self, login, password, server):
-        if not mt5.login(login, password, server):
-            log.warning("Falha login %s: %s", login, mt5.last_error())
-            return None, []
-
         info = mt5.account_info()
         if info is None:
-            return None, []
+            log.error("Nenhuma conta logada no MT5")
+            return False
+        log.info("MT5 OK | Conta: %s | Servidor: %s", info.login, info.server)
+        return True
 
-        acc = {
-            "login": info.login,
-            "balance": info.balance,
-            "equity": info.equity,
-            "profit": info.profit,
-            "server": info.server,
-        }
-
-        trades = []
+    def sync_once(self):
+        info = mt5.account_info()
+        if info is None:
+            log.warning("Conta indisponivel")
+            return
 
         positions = mt5.positions_get()
+        open_trades = []
         if positions:
             for pos in positions:
-                trades.append({
+                open_trades.append({
                     "ticket": str(pos.ticket),
                     "symbol": pos.symbol,
                     "order_type": "buy" if pos.type == mt5.ORDER_TYPE_BUY else "sell",
@@ -93,11 +73,12 @@ class MT5Monitor:
 
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         deals = mt5.history_deals_get(today, datetime.now())
+        closed_trades = []
         if deals:
             for deal in deals:
                 if deal.entry == 0:
                     continue
-                trades.append({
+                closed_trades.append({
                     "ticket": str(deal.ticket),
                     "symbol": deal.symbol,
                     "order_type": "buy" if deal.type == mt5.DEAL_TYPE_BUY else "sell",
@@ -111,65 +92,48 @@ class MT5Monitor:
                     "opened_at": datetime.fromtimestamp(deal.time).isoformat(),
                 })
 
-        return acc, trades
+        all_trades = open_trades + closed_trades
 
-    def report_to_api(self, login, acc, trades):
         payload = {
-            "account_number": str(login),
-            "server": acc["server"],
-            "balance": acc["balance"],
-            "equity": acc["equity"],
-            "profit_today": acc["profit"],
+            "account_number": str(info.login),
+            "server": info.server,
+            "balance": info.balance,
+            "equity": info.equity,
+            "profit_today": info.profit,
             "profit_week": 0.0,
-            "trades": trades,
+            "trades": all_trades,
         }
+
         try:
-            r = requests.post(f"{API_BASE}/api/mt5/report", json=payload, timeout=15)
+            r = requests.post(f"{API_BASE}/api/mt5/report", json=payload, timeout=60)
             if r.status_code == 200:
+                data = r.json()
                 log.info(
-                    "Conta %s | Saldo: $%.2f | Equity: $%.2f | Trades: %d",
-                    login, acc["balance"], acc["equity"], len(trades),
+                    "Conta %s | Saldo: $%.2f | Equity: $%.2f | Posicoes: %d | Historico: %d",
+                    info.login, info.balance, info.equity,
+                    len(open_trades), len(closed_trades),
                 )
-                self.stats["trades_reported"] += len(trades)
-                return True
+                self.stats["syncs"] += 1
+                self.stats["trades_reported"] += len(all_trades)
             else:
                 log.error("API %d: %s", r.status_code, r.text[:150])
-                return False
         except Exception as e:
             log.error("API erro: %s", e)
-            return False
-
-    def sync_once(self):
-        for acct in self.accounts:
-            login = acct["login"]
-            password = acct["password"]
-            server = acct["server"]
-
-            acc, trades = self.get_account_trades(login, password, server)
-            if acc is None:
-                continue
-
-            if self.report_to_api(login, acc, trades):
-                self.stats["syncs"] += 1
-            else:
-                self.stats["errors"] += 1
+            self.stats["errors"] += 1
 
     def run(self):
-        if not self.connect_mt5():
-            log.error("MT5 nao encontrado. Verifique se esta aberto.")
+        if not self.connect():
             return
 
         log.info("=" * 50)
-        log.info("LEVERAGE INVEST - MT5 Monitor Iniciado")
-        log.info("Contas: %s", [str(a['login']) for a in self.accounts])
-        log.info("Intervalo: %ds", SYNC_INTERVAL)
+        log.info("LEVERAGE INVEST - MT5 Monitor Rodando")
+        log.info("Sync a cada %ds", SYNC_INTERVAL)
         log.info("=" * 50)
 
         while self.running:
             try:
                 self.sync_once()
             except KeyboardInterrupt:
-                log.info("Interrompido")
                 break
             except Exception as e:
                 log.error("Erro: %s", e)
@@ -177,9 +141,8 @@ class MT5Monitor:
             time.sleep(SYNC_INTERVAL)
 
         mt5.shutdown()
-        log.info("Monitor encerrado | Stats: %s", self.stats)
+        log.info("Encerrado | %s", self.stats)
 
 
 if __name__ == "__main__":
-    monitor = MT5Monitor()
-    monitor.run()
+    MT5Monitor().run()
