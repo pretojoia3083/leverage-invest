@@ -600,7 +600,7 @@ async function connectFollower(){
   var s=document.getElementById('followerServer').value;
   if(!a||!s){showToast('Preencha todos os campos','o');return}
   try{
-    var r=await api('/api/copy-trade/connect-follower',{method:'POST',body:JSON.stringify({account_number:a,server:s,master_config_id:1})});
+    var r=await api('/api/copy-trade/connect-follower',{method:'POST',body:JSON.stringify({account_number:a,server:s,master_account_id:DASH.accounts[0].id})});
     if(r.message){document.getElementById('followerStatus').innerHTML='<span class="badge bg">'+r.message+'</span>';showToast('Conta follower conectada!');loadCopyConfigs()}
     else{showToast(r.detail||'Erro','r')}
   }catch(e){showToast('Erro de conexão','r')}

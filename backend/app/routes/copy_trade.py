@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import Optional
 
 from app.models.database import get_db
 from app.models.schemas import MT5Account, CopyTradeConfig, Order
@@ -19,7 +18,7 @@ class ConnectMasterRequest(BaseModel):
 class ConnectFollowerRequest(BaseModel):
     account_number: str
     server: str
-    master_config_id: int
+    master_account_id: int
 
 
 @router.post("/connect-master")
@@ -64,12 +63,21 @@ def connect_follower(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    master_config = db.query(CopyTradeConfig).filter(
-        CopyTradeConfig.id == req.master_config_id
+    master_account = db.query(MT5Account).filter(
+        MT5Account.id == req.master_account_id,
+        MT5Account.user_id == current_user.id
     ).first()
 
-    if not master_config:
-        raise HTTPException(status_code=404, detail="Configuração master não encontrada")
+    if not master_account:
+        raise HTTPException(status_code=404, detail="Conta master não encontrada")
+
+    existing_config = db.query(CopyTradeConfig).filter(
+        CopyTradeConfig.user_id == current_user.id,
+        CopyTradeConfig.master_account_id == master_account.id
+    ).first()
+
+    if existing_config:
+        return {"message": "Configuração de copy trade já existe!", "config_id": existing_config.id}
 
     follower_account = db.query(MT5Account).filter(
         MT5Account.user_id == current_user.id,
@@ -91,7 +99,7 @@ def connect_follower(
 
     config = CopyTradeConfig(
         user_id=current_user.id,
-        master_account_id=master_config.master_account_id,
+        master_account_id=master_account.id,
         follower_account_id=follower_account.id,
         lot_multiplier=1.0,
         copy_sl=True,
