@@ -16,9 +16,8 @@ class ConnectMasterRequest(BaseModel):
 
 
 class ConnectFollowerRequest(BaseModel):
-    account_number: str
-    server: str
     master_account_id: int
+    follower_account_id: int
 
 
 @router.post("/connect-master")
@@ -80,22 +79,12 @@ def connect_follower(
         return {"message": "Configuração de copy trade já existe!", "config_id": existing_config.id}
 
     follower_account = db.query(MT5Account).filter(
-        MT5Account.user_id == current_user.id,
-        MT5Account.account_number == req.account_number
+        MT5Account.id == req.follower_account_id,
+        MT5Account.user_id == current_user.id
     ).first()
 
     if not follower_account:
-        follower_account = MT5Account(
-            user_id=current_user.id,
-            account_number=req.account_number,
-            server=req.server,
-            balance=0,
-            equity=0,
-            is_connected=True
-        )
-        db.add(follower_account)
-        db.commit()
-        db.refresh(follower_account)
+        raise HTTPException(status_code=404, detail="Conta follower não encontrada")
 
     config = CopyTradeConfig(
         user_id=current_user.id,
