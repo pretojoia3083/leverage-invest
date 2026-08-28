@@ -12,6 +12,41 @@ from app.auth import get_current_user
 router = APIRouter(prefix="/api/robots", tags=["robots"])
 
 
+class ConnectMT5Request(BaseModel):
+    account_number: str
+    server: str
+    balance: float = 0.0
+
+
+@router.post("/connect-mt5")
+def connect_mt5(req: ConnectMT5Request, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    existing = db.query(MT5Account).filter(
+        MT5Account.user_id == user.id,
+        MT5Account.account_number == req.account_number,
+    ).first()
+
+    if existing:
+        existing.server = req.server
+        existing.balance = req.balance
+        existing.is_connected = True
+        existing.last_update = datetime.utcnow()
+        db.commit()
+        return {"ok": True, "account_id": existing.id}
+
+    account = MT5Account(
+        user_id=user.id,
+        account_number=req.account_number,
+        server=req.server,
+        balance=req.balance,
+        equity=req.balance,
+        is_connected=True,
+    )
+    db.add(account)
+    db.commit()
+    db.refresh(account)
+    return {"ok": True, "account_id": account.id}
+
+
 @router.get("")
 def list_robots(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     robots = db.query(Robot).filter(Robot.is_active == True).all()
