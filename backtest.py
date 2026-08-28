@@ -11,16 +11,17 @@ import os
 MT5_PATH = r"C:\Program Files\Vantage International MT5\terminal64.exe"
 
 #--- Configuracao do EA (iguais ao .mq5)
-ENTRY_DISTANCE = 2500   # pontos
-STOP_LOSS = 1000        # pontos
+ENTRY_DISTANCE = 6000   # pontos (precisa cobrir spread)
+STOP_LOSS = 4000        # pontos (maior que spread)
 TAKE_PROFIT = 0         # 0 = desabilitado
-TRAIL_ACTIVATE = 700    # pontos
-TRAIL_DISTANCE = 500    # pontos
+TRAIL_ACTIVATE = 4000   # pontos (ate cobrir spread + lucro)
+TRAIL_DISTANCE = 2000   # pontos
 CANCEL_SECONDS = 300    # 5 min
 WAIT_SECONDS = 120      # 2 min
 LOT = 0.01
 INITIAL_BALANCE = 1000.0
 UseTrailing = True
+SPREAD = 1705           # spread real BTC Vantage (pontos)
 
 def run_backtest(days):
     from datetime import timezone
@@ -130,9 +131,9 @@ def run_backtest(days):
                 #--- Buy Stop atingida
                 if high >= buy_stop_price:
                     position_type = "BUY"
-                    position_entry = buy_stop_price
-                    position_sl = buy_sl
-                    position_tp = buy_tp
+                    position_entry = buy_stop_price + SPREAD * point  # spread no BUY
+                    position_sl = buy_sl + SPREAD * point
+                    position_tp = buy_tp + SPREAD * point if buy_tp > 0 else 0
                     position_trail_active = False
                     trail_sl = 0
                     state = "IN_POSITION"
@@ -141,7 +142,7 @@ def run_backtest(days):
                 #--- Sell Stop atingida
                 if low <= sell_stop_price:
                     position_type = "SELL"
-                    position_entry = sell_stop_price
+                    position_entry = sell_stop_price  # spread ja embutido no SELL
                     position_sl = sell_sl
                     position_tp = sell_tp
                     position_trail_active = False
@@ -213,9 +214,10 @@ def run_backtest(days):
                     profit_points = (position_entry - close_price) / point
                     closed = True
 
-            #--- Fechar posicao
+            #--- Fechar posicao (descontar spread)
             if closed:
-                profit_dollars = profit_points * point * contract * LOT
+                spread_cost = SPREAD * point * contract * LOT
+                profit_dollars = profit_points * point * contract * LOT - spread_cost
                 balance += profit_dollars
                 equity = balance
 
