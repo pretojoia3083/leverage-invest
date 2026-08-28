@@ -15,7 +15,8 @@ def get_dashboard(user: User = Depends(get_current_user), db: Session = Depends(
     robots = db.query(RobotInstance).filter(RobotInstance.user_id == user.id).all()
     running = [r for r in robots if r.is_running]
 
-    real_accounts = all_accounts
+    real_accounts = [a for a in all_accounts if 'demo' not in (a.server or '').lower()]
+    demo_accounts = [a for a in all_accounts if 'demo' in (a.server or '').lower()]
 
     total_balance = sum(a.balance for a in real_accounts)
     total_equity = sum(a.equity for a in real_accounts)
@@ -27,6 +28,8 @@ def get_dashboard(user: User = Depends(get_current_user), db: Session = Depends(
     recent_orders = db.query(Order).filter(
         Order.user_id == user.id
     ).order_by(Order.opened_at.desc()).limit(10).all()
+
+    account_map = {a.id: a for a in all_accounts}
 
     return {
         "accounts": [{
@@ -41,6 +44,15 @@ def get_dashboard(user: User = Depends(get_current_user), db: Session = Depends(
             "profit_pct": a.profit_pct,
             "is_connected": a.is_connected,
         } for a in real_accounts],
+        "demo_accounts": [{
+            "id": a.id,
+            "account_number": a.account_number,
+            "server": a.server,
+            "balance": a.balance,
+            "equity": a.equity,
+            "profit_today": a.profit_today,
+            "is_connected": a.is_connected,
+        } for a in demo_accounts],
         "summary": {
             "total_balance": total_balance,
             "total_equity": total_equity,
@@ -61,6 +73,8 @@ def get_dashboard(user: User = Depends(get_current_user), db: Session = Depends(
             "close_price": o.close_price,
             "profit": o.profit,
             "status": o.status,
+            "account_number": account_map.get(o.mt5_account_id, None).account_number if account_map.get(o.mt5_account_id) else None,
+            "is_demo": 'demo' in (account_map.get(o.mt5_account_id, None).server or '').lower() if account_map.get(o.mt5_account_id) else False,
             "opened_at": o.opened_at.isoformat() if o.opened_at else None,
         } for o in recent_orders],
     }
