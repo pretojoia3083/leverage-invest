@@ -112,8 +112,11 @@ def create_instance(req: CreateInstanceRequest, user: User = Depends(get_current
         mt5_account_id=req.mt5_account_id,
         robot_id=req.robot_id,
     )
-    # Auto-calculate lot
-    initial_lot = instance.calculate_lot(account.balance, robot.symbols.split(",")[0])
+    # Auto-calculate lot (default 0.10 if balance is 0)
+    if account.balance > 0:
+        initial_lot = instance.calculate_lot(account.balance, robot.symbols.split(",")[0])
+    else:
+        initial_lot = 0.10
     instance.fixed_lot = initial_lot
 
     db.add(instance)
