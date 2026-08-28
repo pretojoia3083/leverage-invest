@@ -3,465 +3,733 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEVERAGE INVEST — Dashboard de Trading</title>
+<title>LEVERAGE INVEST</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--orange:#FF6B00;--orange-light:#FF8C33;--orange-dark:#E05500;--lilac:#9B59B6;--lilac-light:#BB8FCE;--lilac-dark:#7D3C98;--white:#FFF;--bg-dark:#0A0A0F;--bg-card:#12121A;--bg-card2:#1A1A25;--bg-hover:#222230;--text:#E8E8F0;--text-muted:#8888A0;--green:#22C55E;--red:#EF4444;--border:rgba(255,255,255,.06)}
+:root{--orange:#FF6B00;--lilac:#9B59B6;--white:#FFF;--bg:#0A0A0F;--bg2:#12121A;--bg3:#1A1A25;--hover:#222230;--text:#E8E8F0;--muted:#8888A0;--green:#22C55E;--red:#EF4444;--border:rgba(255,255,255,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh}
-.font-display{font-family:'Space Grotesk',sans-serif}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-dark)}::-webkit-scrollbar-thumb{background:var(--lilac-dark);border-radius:3px}
-.layout{display:flex;min-height:100vh}
-.sidebar{width:260px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:10}
-.content{margin-left:260px;flex:1;padding:32px;min-height:100vh}
-.logo-row{padding:24px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
-.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}
-.logo-text{font-size:16px;font-weight:700}.logo-text .grad{background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.menu{flex:1;padding:16px 12px}.menu-label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);padding:8px 12px;margin-top:8px}
-.menu-item{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border:none;background:transparent;color:var(--text-muted);font-size:14px;font-weight:500;cursor:pointer;border-radius:10px;transition:all .2s;margin-bottom:2px}
-.menu-item:hover{background:var(--bg-hover);color:var(--text)}.menu-item.active{background:linear-gradient(135deg,rgba(255,107,0,.15),rgba(155,89,182,.15));color:var(--white);border:1px solid rgba(255,107,0,.2)}
-.sidebar-foot{padding:16px 20px;border-top:1px solid var(--border)}
-.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
-.dot-on{background:var(--green);box-shadow:0 0 8px var(--green)}.dot-off{background:var(--red)}.dot-connecting{background:var(--orange);animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.user-info{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px;background:var(--bg-card2);border-radius:10px}
-.user-avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
-.user-name{font-size:13px;font-weight:600}.user-plan{font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1px}
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
-.card-glow{box-shadow:0 0 30px rgba(255,107,0,.06),0 0 30px rgba(155,89,182,.06)}
-.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px}
-.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.stat-card.orange::before{background:linear-gradient(90deg,var(--orange),var(--orange-light))}
-.stat-card.lilac::before{background:linear-gradient(90deg,var(--lilac),var(--lilac-light))}
-.stat-card.green::before{background:linear-gradient(90deg,var(--green),#4ADE80)}
-.stat-icon{font-size:24px;margin-bottom:8px}.stat-value{font-size:24px;font-weight:800;margin:4px 0}.stat-label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
+.fd{font-family:'Space Grotesk',sans-serif}
+.page{display:none}.page.on{display:block}
+.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.abox{width:100%;max-width:420px}
+.alogo{text-align:center;margin-bottom:32px}
+.alogo-i{width:60px;height:60px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin:0 auto 12px}
+.alogo-t{font-size:24px;font-weight:800}.alogo-s{font-size:14px;color:var(--muted);margin-top:4px}
+.af{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}.af a{color:var(--orange);text-decoration:none;font-weight:600}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+.card-g{box-shadow:0 0 30px rgba(255,107,0,.06),0 0 30px rgba(155,89,182,.06)}
+.fg{margin-bottom:16px}.fl{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.fi{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit}
+.fi:focus{outline:none;border-color:var(--orange)}.fi::placeholder{color:var(--muted)}
 .btn{padding:10px 20px;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
-.btn-orange{background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff}.btn-orange:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,107,0,.3)}
-.btn-lilac{background:linear-gradient(135deg,var(--lilac),var(--lilac-dark));color:#fff}.btn-lilac:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(155,89,182,.3)}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
-.btn-danger{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--red)}
-.btn-sm{padding:6px 14px;font-size:12px}.btn-lg{padding:14px 28px;font-size:16px}.btn-block{width:100%;justify-content:center}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.badge-green{background:rgba(34,197,94,.15);color:var(--green)}.badge-red{background:rgba(239,68,68,.15);color:var(--red)}
-.badge-orange{background:rgba(255,107,0,.15);color:var(--orange)}.badge-lilac{background:rgba(155,89,182,.15);color:var(--lilac)}
-.robot-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
-.robot-card:hover{border-color:rgba(255,107,0,.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,107,0,.1)}
-.robot-card.active{border-color:var(--green);box-shadow:0 0 20px rgba(34,197,94,.15)}
-.robot-icon{font-size:40px;margin-bottom:12px}.robot-name{font-size:18px;font-weight:700;margin-bottom:6px}
-.robot-strategy{font-size:12px;color:var(--lilac-light);margin-bottom:8px}
-.robot-desc{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:16px}
-.robot-symbols{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.robot-symbol{padding:4px 10px;background:var(--bg-card2);border-radius:6px;font-size:11px;font-weight:600;color:var(--orange)}
-.robot-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;padding:12px;background:var(--bg-card2);border-radius:10px}
-.robot-stat-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
-.robot-stat-value{font-size:16px;font-weight:700;margin-top:2px}
-.connect-box{border:2px dashed var(--border);border-radius:16px;padding:40px;text-align:center;transition:all .3s;cursor:pointer}
-.connect-box:hover{border-color:var(--orange);background:rgba(255,107,0,.03)}
-.connect-icon{font-size:48px;margin-bottom:12px}.connect-title{font-size:18px;font-weight:700;margin-bottom:8px}
-.form-group{margin-bottom:16px}.form-label{display:block;font-size:13px;font-weight:500;color:var(--text-muted);margin-bottom:6px}
-.form-input{width:100%;padding:12px 16px;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit;transition:border-color .2s}
-.form-input:focus{outline:none;border-color:var(--orange)}.form-input::placeholder{color:var(--text-muted)}
-select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238888A0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse}
-th{text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);border-bottom:1px solid var(--border)}
-td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border)}tr:hover td{background:var(--bg-hover)}
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100}
-.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:560px;width:90%;max-height:90vh;overflow-y:auto}
-.modal-title{font-size:22px;font-weight:800;margin-bottom:8px}
+.bo{background:linear-gradient(135deg,var(--orange),#E05500);color:#fff}.bo:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,107,0,.3)}
+.bl{background:linear-gradient(135deg,var(--lilac),#7D3C98);color:#fff}.bl:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(155,89,182,.3)}
+.bout{background:transparent;border:1px solid var(--border);color:var(--text)}.bout:hover{border-color:var(--orange);color:var(--orange)}
+.bsm{padding:6px 14px;font-size:12px}.blg{padding:14px 28px;font-size:16px}.bblk{width:100%;justify-content:center}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase}
+.bg{background:rgba(34,197,94,.15);color:var(--green)}.br{background:rgba(239,68,68,.15);color:var(--red)}
+.bo2{background:rgba(255,107,0,.15);color:var(--orange)}.bl2{background:rgba(155,89,182,.15);color:var(--lilac)}
+.layout{display:flex;min-height:100vh}
+.side{width:260px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:10}
+.cont{margin-left:260px;flex:1;padding:32px;min-height:100vh}
+.lrow{padding:24px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.li{width:42px;height:42px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}
+.lt{font-size:16px;font-weight:700}.lt .gd{background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.menu{flex:1;padding:16px 12px}.mlbl{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:8px 12px;margin-top:8px}
+.mi{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;border-radius:10px;transition:all .2s;margin-bottom:2px}
+.mi:hover{background:var(--hover);color:var(--text)}.mi.act{background:linear-gradient(135deg,rgba(255,107,0,.15),rgba(155,89,182,.15));color:var(--white);border:1px solid rgba(255,107,0,.2)}
+.sfoot{padding:16px 20px;border-top:1px solid var(--border)}
+.sdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.don{background:var(--green);box-shadow:0 0 8px var(--green)}.doff{background:var(--red)}.dcon{background:var(--orange);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.uinfo{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px;background:var(--bg3);border-radius:10px}
+.uav{width:36px;height:36px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
+.uname{font-size:13px;font-weight:600}.uplan{font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sc.sco::before{background:linear-gradient(90deg,var(--orange),#FF8C33)}
+.sc.scl::before{background:linear-gradient(90deg,var(--lilac),#BB8FCE)}
+.sc.scg::before{background:linear-gradient(90deg,var(--green),#4ADE80)}
+.si{font-size:24px;margin-bottom:8px}.sv{font-size:24px;font-weight:800;margin:4px 0}.sl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.rc{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
+.rc:hover{border-color:rgba(255,107,0,.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,107,0,.1)}
+.rc.act{border-color:var(--green);box-shadow:0 0 20px rgba(34,197,94,.15)}
+.ri{font-size:40px;margin-bottom:12px}.rn{font-size:18px;font-weight:700;margin-bottom:6px}
+.rs{font-size:12px;color:#BB8FCE;margin-bottom:8px}
+.rd{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:16px}
+.rsy{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.rsp{padding:4px 10px;background:var(--bg3);border-radius:6px;font-size:11px;font-weight:600;color:var(--orange)}
+.rst{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;padding:12px;background:var(--bg3);border-radius:10px}
+.rsl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.rsv{font-size:16px;font-weight:700;margin-top:2px}
+.cbox{border:2px dashed var(--border);border-radius:16px;padding:40px;text-align:center;transition:all .3s;cursor:pointer}
+.cbox:hover{border-color:var(--orange);background:rgba(255,107,0,.03)}
+.cicon{font-size:48px;margin-bottom:12px}.ctitle{font-size:18px;font-weight:700;margin-bottom:8px}
+table{width:100%;border-collapse:collapse}th{text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border)}tr:hover td{background:var(--hover)}
+.mover{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:560px;width:90%;max-height:90vh;overflow-y:auto}
+.mt{font-size:22px;font-weight:800;margin-bottom:8px}
 .steps{display:flex;gap:12px;margin-bottom:24px}.step{flex:1;text-align:center}
-.step-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;font-weight:700}
-.step-num.done{background:var(--green);color:#fff}.step-num.active{background:var(--orange);color:#fff}
-.step-num.pending{background:var(--bg-card2);color:var(--text-muted);border:1px solid var(--border)}
-.step-label{font-size:11px;color:var(--text-muted)}
-.page{display:none}.page.active{display:block}
-.auth-container.page{display:none}
-.auth-container.page.active{display:flex}
-.auth-container{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-dark);padding:20px}
-.auth-box{width:100%;max-width:420px}.auth-logo{text-align:center;margin-bottom:32px}
-.auth-logo-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin:0 auto 12px}
-.auth-title{font-size:24px;font-weight:800}.auth-subtitle{font-size:14px;color:var(--text-muted);margin-top:4px}
-.auth-footer{text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted)}.auth-footer a{color:var(--orange);text-decoration:none;font-weight:600}
-.plan-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;transition:all .3s;position:relative}
-.plan-card:hover{transform:translateY(-4px)}.plan-card.popular{border-color:var(--orange);box-shadow:0 0 30px rgba(255,107,0,.15)}
-.plan-card.popular::before{content:'MAIS POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--orange),var(--lilac));color:#fff;padding:4px 16px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1px}
-.plan-name{font-size:18px;font-weight:700;margin-bottom:8px}.plan-price{font-size:36px;font-weight:800;margin:12px 0}
-.plan-price span{font-size:14px;font-weight:400;color:var(--text-muted)}
-.plan-features{list-style:none;margin:20px 0;text-align:left}.plan-features li{padding:8px 0;font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:8px}
-.plan-features li::before{content:'✓';color:var(--green);font-weight:700}
-.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.contact-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;transition:all .3s;cursor:pointer}
-.contact-card:hover{border-color:var(--orange);transform:translateY(-2px)}
-.contact-icon{font-size:32px;margin-bottom:8px}.contact-label{font-size:14px;font-weight:600}.contact-value{font-size:12px;color:var(--text-muted);margin-top:4px}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.fade-in{animation:fadeIn .4s ease}
-.toast{position:fixed;top:24px;right:24px;background:var(--bg-card);border-radius:12px;padding:16px 24px;z-index:200;display:none;max-width:400px;box-shadow:0 8px 30px rgba(0,0,0,.4);border:1px solid}
-.toast-green{border-color:var(--green)}.toast-red{border-color:var(--red)}.toast-orange{border-color:var(--orange)}
-
-/* LOT CONFIG PANEL */
-.lot-panel{background:var(--bg-card2);border-radius:12px;padding:20px;margin-top:16px}
-.lot-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.lot-preview{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:16px}
-.lot-big{font-size:32px;font-weight:800;color:var(--orange)}
-.lot-detail{font-size:12px;color:var(--text-muted);margin-top:4px}
-.toggle-switch{position:relative;width:48px;height:26px;display:inline-block}
-.toggle-switch input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg-card2);border:1px solid var(--border);border-radius:13px;cursor:pointer;transition:.3s}
-.toggle-slider::before{content:'';position:absolute;height:20px;width:20px;left:2px;bottom:2px;background:var(--text-muted);border-radius:50%;transition:.3s}
-.toggle-switch input:checked+.toggle-slider{background:var(--orange);border-color:var(--orange)}
-.toggle-switch input:checked+.toggle-slider::before{transform:translateX(22px);background:#fff}
-.range-group{margin-bottom:12px}
-.range-header{display:flex;justify-content:space-between;margin-bottom:4px}
-.range-label{font-size:12px;color:var(--text-muted)}.range-value{font-size:12px;font-weight:600;color:var(--orange)}
-input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--bg-card);border-radius:2px;outline:none}
+.sn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;font-weight:700}
+.sn.done{background:var(--green);color:#fff}.sn.act{background:var(--orange);color:#fff}
+.sn.pend{background:var(--bg3);color:var(--muted);border:1px solid var(--border)}
+.slab{font-size:11px;color:var(--muted)}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;transition:all .3s;position:relative}
+.pc:hover{transform:translateY(-4px)}.pc.pop{border-color:var(--orange);box-shadow:0 0 30px rgba(255,107,0,.15)}
+.pc.pop::before{content:'MAIS POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--orange),var(--lilac));color:#fff;padding:4px 16px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1px}
+.pn{font-size:18px;font-weight:700;margin-bottom:8px}.pp{font-size:36px;font-weight:800;margin:12px 0}
+.pp span{font-size:14px;font-weight:400;color:var(--muted)}
+.pf{list-style:none;margin:20px 0;text-align:left}.pf li{padding:8px 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.pf li::before{content:'✓';color:var(--green);font-weight:700}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cc{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;transition:all .3s;cursor:pointer}
+.cc:hover{border-color:var(--orange);transform:translateY(-2px)}
+.cci{font-size:32px;margin-bottom:8px}.ccl{font-size:14px;font-weight:600}.ccv{font-size:12px;color:var(--muted);margin-top:4px}
+.tog{position:relative;width:48px;height:26px;display:inline-block}
+.tog input{opacity:0;width:0;height:0}
+.tsl{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg3);border:1px solid var(--border);border-radius:13px;cursor:pointer;transition:.3s}
+.tsl::before{content:'';position:absolute;height:20px;width:20px;left:2px;bottom:2px;background:var(--muted);border-radius:50%;transition:.3s}
+.tog input:checked+.tsl{background:var(--orange);border-color:var(--orange)}
+.tog input:checked+.tsl::before{transform:translateX(22px);background:#fff}
+.rg{margin-bottom:12px}.rh{display:flex;justify-content:space-between;margin-bottom:4px}
+.rl{font-size:12px;color:var(--muted)}.rv{font-size:12px;font-weight:600;color:var(--orange)}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--bg2);border-radius:2px;outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--orange);border-radius:50%;cursor:pointer}
-.risk-indicator{display:flex;gap:4px;margin-top:8px}
-.risk-bar{flex:1;height:4px;border-radius:2px;background:var(--bg-card)}
-.risk-bar.active-low{background:var(--green)}.risk-bar.active-med{background:var(--orange)}.risk-bar.active-high{background:var(--red)}
-@media(max-width:1200px){.grid-4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.sidebar{display:none}.content{margin-left:0;padding:16px}.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.lot-row{grid-template-columns:1fr}}
+.toast{position:fixed;top:24px;right:24px;background:var(--bg2);border-radius:12px;padding:16px 24px;z-index:200;display:none;max-width:400px;box-shadow:0 8px 30px rgba(0,0,0,.4);border:1px solid}
+.toast.tg{border-color:var(--green)}.toast.tr{border-color:var(--red)}.toast.to{border-color:var(--orange)}
+.fade{animation:fadeIn .4s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1200px){.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.side{display:none}.cont{margin-left:0;padding:16px}.g4,.g3,.g2{grid-template-columns:1fr}.cg{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="page-login" class="auth-container page active">
-  <div class="auth-box fade-in">
-    <div class="auth-logo">
-      <div class="auth-logo-icon">LI</div>
-      <div class="auth-title font-display">LEVERAGE <span style="background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent">INVEST</span></div>
-      <div class="auth-subtitle">Acesse sua conta</div>
+<div id="pg-login" class="page auth on">
+  <div class="abox fade">
+    <div class="alogo">
+      <div class="alogo-i">LI</div>
+      <div class="alogo-t fd">LEVERAGE <span style="background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent">INVEST</span></div>
+      <div class="alogo-s">Acesse sua conta</div>
     </div>
-    <div class="card card-glow">
-      <div class="form-group"><label class="form-label">Email</label><input type="email" id="loginEmail" class="form-input" placeholder="seu@email.com"></div>
-      <div class="form-group"><label class="form-label">Senha</label><input type="password" id="loginPassword" class="form-input" placeholder="••••••••"></div>
-      <button class="btn btn-orange btn-block btn-lg" onclick="doLogin()">Entrar</button>
+    <div class="card card-g">
+      <div class="fg"><label class="fl">Email</label><input type="email" id="loginEmail" class="fi" placeholder="seu@email.com"></div>
+      <div class="fg"><label class="fl">Senha</label><input type="password" id="loginPassword" class="fi" placeholder="••••••••"></div>
+      <button class="btn bo bblk blg" onclick="doLogin()">Entrar</button>
       <div id="loginError" style="color:var(--red);font-size:13px;margin-top:12px;text-align:center;display:none"></div>
     </div>
-    <div class="auth-footer">Não tem conta? <a href="#" onclick="showPage('register')">Criar conta</a></div>
+    <div class="af">Não tem conta? <a href="#" onclick="showPage('register')">Criar conta</a></div>
   </div>
 </div>
 
-<!-- REGISTER -->
-<div id="page-register" class="auth-container page">
-  <div class="auth-box fade-in">
-    <div class="auth-logo">
-      <div class="auth-logo-icon">LI</div>
-      <div class="auth-title font-display">LEVERAGE <span style="background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent">INVEST</span></div>
-      <div class="auth-subtitle">Crie sua conta grátis</div>
+<div id="pg-register" class="page auth">
+  <div class="abox fade">
+    <div class="alogo">
+      <div class="alogo-i">LI</div>
+      <div class="alogo-t fd">LEVERAGE <span style="background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent">INVEST</span></div>
+      <div class="alogo-s">Crie sua conta grátis</div>
     </div>
-    <div class="card card-glow">
-      <div class="form-group"><label class="form-label">Nome</label><input type="text" id="regName" class="form-input" placeholder="Seu nome"></div>
-      <div class="form-group"><label class="form-label">Email</label><input type="email" id="regEmail" class="form-input" placeholder="seu@email.com"></div>
-      <div class="form-group"><label class="form-label">WhatsApp</label><input type="tel" id="regPhone" class="form-input" placeholder="(11) 99999-9999"></div>
-      <div class="form-group"><label class="form-label">Senha</label><input type="password" id="regPassword" class="form-input" placeholder="Mínimo 6 caracteres"></div>
-      <button class="btn btn-orange btn-block btn-lg" onclick="doRegister()">Criar conta</button>
+    <div class="card card-g">
+      <div class="fg"><label class="fl">Nome</label><input type="text" id="regName" class="fi" placeholder="Seu nome"></div>
+      <div class="fg"><label class="fl">Email</label><input type="email" id="regEmail" class="fi" placeholder="seu@email.com"></div>
+      <div class="fg"><label class="fl">WhatsApp</label><input type="tel" id="regPhone" class="fi" placeholder="(11) 99999-9999"></div>
+      <div class="fg"><label class="fl">Senha</label><input type="password" id="regPassword" class="fi" placeholder="Mínimo 6 caracteres"></div>
+      <button class="btn bo bblk blg" onclick="doRegister()">Criar conta</button>
       <div id="regError" style="color:var(--red);font-size:13px;margin-top:12px;text-align:center;display:none"></div>
     </div>
-    <div class="auth-footer">Já tem conta? <a href="#" onclick="showPage('login')">Entrar</a></div>
+    <div class="af">Já tem conta? <a href="#" onclick="showPage('login')">Entrar</a></div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="page-dashboard" class="page">
+<div id="pg-dashboard" class="page">
   <div class="layout">
-    <nav class="sidebar">
-      <div class="logo-row">
-        <div class="logo-icon">LI</div>
-        <div class="logo-text font-display">LEVERAGE <span class="grad">INVEST</span></div>
+    <nav class="side">
+      <div class="lrow">
+        <div class="li">LI</div>
+        <div class="lt fd">LEVERAGE <span class="gd">INVEST</span></div>
       </div>
       <div class="menu">
-        <div class="menu-label">Menu</div>
-        <button class="menu-item active" onclick="showTab('dashboard',this)"><span style="font-size:18px;width:24px;text-align:center">📊</span> Dashboard</button>
-        <button class="menu-item" onclick="showTab('robots',this)"><span style="font-size:18px;width:24px;text-align:center">🤖</span> Robôs</button>
-        <button class="menu-item" onclick="showTab('orders',this)"><span style="font-size:18px;width:24px;text-align:center">📋</span> Ordens</button>
-        <button class="menu-item" onclick="showTab('pricing',this)"><span style="font-size:18px;width:24px;text-align:center">💎</span> Planos</button>
-        <button class="menu-item" onclick="showTab('settings',this)"><span style="font-size:18px;width:24px;text-align:center">⚙️</span> Configurações</button>
-        <button class="menu-item" onclick="showTab('contact',this)"><span style="font-size:18px;width:24px;text-align:center">💬</span> Contato</button>
-        <button class="menu-item" onclick="showTab('copytrade',this)"><span style="font-size:18px;width:24px;text-align:center">🔄</span> Copy Trade</button>
+        <div class="mlbl">Menu</div>
+        <button class="mi act" onclick="showTab('dashboard',this)">📊 Dashboard</button>
+        <button class="mi" onclick="showTab('robots',this)">🤖 Robôs</button>
+        <button class="mi" onclick="showTab('orders',this)">📋 Ordens</button>
+        <button class="mi" onclick="showTab('pricing',this)">💎 Planos</button>
+        <button class="mi" onclick="showTab('settings',this)">⚙️ Config</button>
+        <button class="mi" onclick="showTab('contact',this)">💬 Contato</button>
+        <button class="mi" onclick="showTab('copytrade',this)">🔄 Copy Trade</button>
       </div>
-      <div class="sidebar-foot">
-        <div><span class="status-dot dot-connecting" id="connDot"></span><span id="connText" style="font-size:12px">Conectando...</span></div>
-        <div class="user-info">
-          <div class="user-avatar" id="userAvatar">U</div>
-          <div><div class="user-name" id="userName">Usuário</div><div class="user-plan" id="userPlan">BASIC</div></div>
+      <div class="sfoot">
+        <div><span class="sdot dcon" id="connDot"></span><span id="connText" style="font-size:12px">Conectando...</span></div>
+        <div class="uinfo">
+          <div class="uav" id="userAvatar">U</div>
+          <div><div class="uname" id="userName">Usuário</div><div class="uplan" id="userPlan">BASIC</div></div>
         </div>
-        <button class="btn btn-outline btn-sm" style="width:100%;margin-top:10px" onclick="doLogout()">Sair</button>
+        <button class="btn bout bsm" style="width:100%;margin-top:10px" onclick="doLogout()">Sair</button>
       </div>
     </nav>
-    <main class="content">
+    <main class="cont">
 
-      <!-- DASHBOARD -->
-      <div id="tab-dashboard" class="tab-content fade-in">
+      <div id="tab-dashboard" class="tab fade">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-          <div><h1 class="font-display" style="font-size:28px">Bem-vindo de volta! 👋</h1><p style="color:var(--text-muted);font-size:14px;margin-top:4px">Acompanhe seus robôs e performance</p></div>
-          <button class="btn btn-orange" onclick="showTab('robots',document.querySelector('[onclick*=robots]'))">🤖 Ver Robôs</button>
+          <div><h1 class="fd" style="font-size:28px">Bem-vindo de volta! 👋</h1><p style="color:var(--muted);font-size:14px;margin-top:4px">Acompanhe seus robôs e performance</p></div>
+          <button class="btn bo" onclick="showTab('robots',document.querySelectorAll('.mi')[1])">🤖 Ver Robôs</button>
         </div>
-        <div class="grid-4">
-          <div class="stat-card orange fade-in"><div class="stat-icon">💰</div><div class="stat-label">Saldo Total</div><div class="stat-value" id="statBalance">$0.00</div></div>
-          <div class="stat-card green fade-in" style="animation-delay:.1s"><div class="stat-icon">📈</div><div class="stat-label">Lucro Hoje</div><div class="stat-value" id="statToday" style="color:var(--green)">+$0.00</div></div>
-          <div class="stat-card lilac fade-in" style="animation-delay:.2s"><div class="stat-icon">📅</div><div class="stat-label">Lucro Semanal</div><div class="stat-value" id="statWeek" style="color:var(--lilac-light)">+$0.00</div></div>
-          <div class="stat-card fade-in" style="animation-delay:.3s"><div class="stat-icon">🎯</div><div class="stat-label">Robôs Ativos</div><div class="stat-value" id="statRobots">0</div></div>
+        <div class="g4">
+          <div class="sc sco fade"><div class="si">💰</div><div class="sl">Saldo Total</div><div class="sv" id="statBalance">$0.00</div></div>
+          <div class="sc scg fade" style="animation-delay:.1s"><div class="si">📈</div><div class="sl">Lucro Hoje</div><div class="sv" id="statToday" style="color:var(--green)">+$0.00</div></div>
+          <div class="sc scl fade" style="animation-delay:.2s"><div class="si">📅</div><div class="sl">Lucro Semanal</div><div class="sv" id="statWeek" style="color:#BB8FCE">+$0.00</div></div>
+          <div class="sc fade" style="animation-delay:.3s"><div class="si">🎯</div><div class="sl">Robôs Ativos</div><div class="sv" id="statRobots">0</div></div>
         </div>
-        <div id="connectMT5Box" class="card card-glow" style="display:none">
-          <div class="connect-box" onclick="showModal('connectModal')">
-            <div class="connect-icon">🔗</div>
-            <div class="connect-title font-display">Conectar Conta MT5</div>
-            <div class="connect-desc">Adicione sua conta MetaTrader 5 para começar</div>
-            <button class="btn btn-orange" style="margin-top:16px">+ Conectar MT5</button>
+        <div id="connectMT5Box" class="card card-g" style="display:none">
+          <div class="cbox" onclick="showModal('connectModal')">
+            <div class="cicon">🔗</div>
+            <div class="ctitle fd">Conectar Conta MT5</div>
+            <div style="color:var(--muted);font-size:14px">Adicione sua conta MetaTrader 5 para começar</div>
+            <button class="btn bo" style="margin-top:16px">+ Conectar MT5</button>
           </div>
         </div>
-        <div id="accountsSection" style="display:none"><div class="card"><div class="card-head"><h2 class="font-display" style="font-size:18px">📊 Suas Contas MT5</h2><button class="btn btn-outline btn-sm" onclick="showModal('connectModal')">+ Adicionar</button></div><div id="accountsList"></div></div></div>
-        <div class="card"><div class="card-head"><h2 class="font-display" style="font-size:18px">📋 Ordens Recentes</h2></div><div class="table-wrap"><table><thead><tr><th>Símbolo</th><th>Tipo</th><th>Lote</th><th>Preço</th><th>Lucro</th><th>Status</th></tr></thead><tbody id="recentOrdersBody"><tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Nenhuma ordem ainda</td></tr></tbody></table></div></div>
+        <div id="accountsSection" style="display:none">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 class="fd" style="font-size:18px">📊 Suas Contas MT5</h2><button class="btn bout bsm" onclick="showModal('connectModal')">+ Adicionar</button></div>
+            <div id="accountsList"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 class="fd" style="font-size:18px">📋 Ordens Recentes</h2></div>
+          <div style="overflow-x:auto"><table><thead><tr><th>Símbolo</th><th>Tipo</th><th>Lote</th><th>Preço</th><th>Lucro</th><th>Status</th></tr></thead><tbody id="recentOrdersBody"><tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted)">Nenhuma ordem ainda</td></tr></tbody></table></div>
+        </div>
       </div>
 
-      <!-- ROBOTS -->
-      <div id="tab-robots" class="tab-content" style="display:none">
-        <div style="margin-bottom:24px"><h1 class="font-display" style="font-size:28px">🤖 Robôs de Trading</h1><p style="color:var(--text-muted);font-size:14px;margin-top:4px">Conecte MT5 → Configure o lote → Clique em Copiar</p></div>
+      <div id="tab-robots" class="tab" style="display:none">
+        <div style="margin-bottom:24px"><h1 class="fd" style="font-size:28px">🤖 Robôs de Trading</h1><p style="color:var(--muted);font-size:14px;margin-top:4px">Conecte MT5 → Configure o lote → Clique em Copiar</p></div>
         <div class="steps" style="margin-bottom:32px">
-          <div class="step"><div class="step-num active" id="step1">1</div><div class="step-label">Conectar MT5</div></div>
-          <div class="step"><div class="step-num pending" id="step2">2</div><div class="step-label">Configurar Lote</div></div>
-          <div class="step"><div class="step-num pending" id="step3">3</div><div class="step-label">Copiar & Operar</div></div>
+          <div class="step"><div class="sn act" id="step1">1</div><div class="slab">Conectar MT5</div></div>
+          <div class="step"><div class="sn pend" id="step2">2</div><div class="slab">Configurar Lote</div></div>
+          <div class="step"><div class="sn pend" id="step3">3</div><div class="slab">Copiar & Operar</div></div>
         </div>
-        <div class="grid-2" id="robotsGrid"></div>
+        <div class="g2" id="robotsGrid"></div>
       </div>
 
-      <!-- ORDERS -->
-      <div id="tab-orders" class="tab-content" style="display:none">
-        <div style="margin-bottom:24px"><h1 class="font-display" style="font-size:28px">📋 Histórico de Ordens</h1></div>
-        <div class="card"><div class="table-wrap"><table><thead><tr><th>Data</th><th>Símbolo</th><th>Tipo</th><th>Lote</th><th>Entrada</th><th>Saída</th><th>SL</th><th>TP</th><th>Lucro</th></tr></thead><tbody id="allOrdersBody"></tbody></table></div></div>
+      <div id="tab-orders" class="tab" style="display:none">
+        <div style="margin-bottom:24px"><h1 class="fd" style="font-size:28px">📋 Histórico de Ordens</h1></div>
+        <div class="card"><div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Símbolo</th><th>Tipo</th><th>Lote</th><th>Entrada</th><th>Saída</th><th>SL</th><th>TP</th><th>Lucro</th></tr></thead><tbody id="allOrdersBody"></tbody></table></div></div>
       </div>
 
-      <!-- PRICING -->
-      <div id="tab-pricing" class="tab-content" style="display:none">
-        <div style="text-align:center;margin-bottom:40px"><h1 class="font-display" style="font-size:28px">💎 Planos & Preços</h1><p style="color:var(--text-muted);font-size:14px;margin-top:8px">Escolha o plano ideal</p></div>
-        <div class="grid-3">
-          <div class="plan-card"><div class="plan-name">Básico</div><div style="color:var(--text-muted);font-size:13px">Para começar</div><div class="plan-price" style="color:var(--orange)">R$97<span>/mês</span></div><ul class="plan-features"><li>1 robô ativo</li><li>XAUUSD ou BTCUSD</li><li>Suporte email</li><li>Dashboard</li></ul><button class="btn btn-outline btn-block" onclick="selectPlan('basic')">Escolher</button></div>
-          <div class="plan-card popular"><div class="plan-name">Pro</div><div style="color:var(--text-muted);font-size:13px">Para traders sérios</div><div class="plan-price" style="color:var(--orange)">R$197<span>/mês</span></div><ul class="plan-features"><li>3 robôs ativos</li><li>XAUUSD + BTCUSD</li><li>Suporte prioritário</li><li>Grid + News Trader</li></ul><button class="btn btn-orange btn-block" onclick="selectPlan('pro')">Escolher Pro</button></div>
-          <div class="plan-card"><div class="plan-name font-display" style="background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent">VIP</div><div style="color:var(--text-muted);font-size:13px">Acesso total</div><div class="plan-price" style="color:var(--lilac)">R$397<span>/mês</span></div><ul class="plan-features"><li>Robôs ilimitados</li><li>Todos os ativos</li><li>Suporte VIP WhatsApp</li><li>Copy Trade + Scalper</li><li>Sinais exclusivos</li></ul><button class="btn btn-lilac btn-block" onclick="selectPlan('vip')">Escolher VIP</button></div>
+      <div id="tab-pricing" class="tab" style="display:none">
+        <div style="text-align:center;margin-bottom:40px"><h1 class="fd" style="font-size:28px">💎 Planos & Preços</h1><p style="color:var(--muted);font-size:14px;margin-top:8px">Escolha o plano ideal</p></div>
+        <div class="g3">
+          <div class="pc"><div class="pn">Básico</div><div style="color:var(--muted);font-size:13px">Para começar</div><div class="pp" style="color:var(--orange)">R$97<span>/mês</span></div><ul class="pf"><li>1 robô ativo</li><li>XAUUSD ou BTCUSD</li><li>Suporte email</li><li>Dashboard</li></ul><button class="btn bout bblk" onclick="selectPlan('basic')">Escolher</button></div>
+          <div class="pc pop"><div class="pn">Pro</div><div style="color:var(--muted);font-size:13px">Para traders sérios</div><div class="pp" style="color:var(--orange)">R$197<span>/mês</span></div><ul class="pf"><li>3 robôs ativos</li><li>XAUUSD + BTCUSD</li><li>Suporte prioritário</li><li>Grid + News Trader</li></ul><button class="btn bo bblk" onclick="selectPlan('pro')">Escolher Pro</button></div>
+          <div class="pc"><div class="pn fd" style="background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent">VIP</div><div style="color:var(--muted);font-size:13px">Acesso total</div><div class="pp" style="color:var(--lilac)">R$397<span>/mês</span></div><ul class="pf"><li>Robôs ilimitados</li><li>Todos os ativos</li><li>Suporte VIP WhatsApp</li><li>Copy Trade + Scalper</li><li>Sinais exclusivos</li></ul><button class="btn bl bblk" onclick="selectPlan('vip')">Escolher VIP</button></div>
         </div>
       </div>
 
-      <!-- SETTINGS -->
-      <div id="tab-settings" class="tab-content" style="display:none">
-        <div style="margin-bottom:24px"><h1 class="font-display" style="font-size:28px">⚙️ Configurações</h1></div>
+      <div id="tab-settings" class="tab" style="display:none">
+        <div style="margin-bottom:24px"><h1 class="fd" style="font-size:28px">⚙️ Configurações</h1></div>
         <div class="card"><h2 style="font-size:16px;font-weight:700;margin-bottom:16px">👤 Perfil</h2>
-          <div class="form-group"><label class="form-label">Nome</label><input type="text" id="settName" class="form-input"></div>
-          <div class="form-group"><label class="form-label">Email</label><input type="email" id="settEmail" class="form-input" disabled style="opacity:.5"></div>
-          <div class="form-group"><label class="form-label">WhatsApp</label><input type="tel" id="settWhatsapp" class="form-input" placeholder="(11) 99999-9999"></div>
-          <button class="btn btn-orange" onclick="saveProfile()">Salvar</button>
+          <div class="fg"><label class="fl">Nome</label><input type="text" id="settName" class="fi"></div>
+          <div class="fg"><label class="fl">Email</label><input type="email" id="settEmail" class="fi" disabled style="opacity:.5"></div>
+          <div class="fg"><label class="fl">WhatsApp</label><input type="tel" id="settWhatsapp" class="fi" placeholder="(11) 99999-9999"></div>
+          <button class="btn bo" onclick="saveProfile()">Salvar</button>
         </div>
       </div>
 
-      <!-- CONTACT -->
-      <div id="tab-contact" class="tab-content" style="display:none">
-        <div style="margin-bottom:24px"><h1 class="font-display" style="font-size:28px">💬 Contato</h1></div>
-        <div class="contact-grid" style="margin-bottom:24px">
-          <div class="contact-card" onclick="window.open('https://wa.me/5511999999999','_blank')"><div class="contact-icon">📱</div><div class="contact-label">WhatsApp</div><div class="contact-value">(11) 99999-9999</div></div>
-          <div class="contact-card" onclick="window.open('mailto:contato@leverageinvest.com')"><div class="contact-icon">📧</div><div class="contact-label">Email</div><div class="contact-value">contato@leverageinvest.com</div></div>
-          <div class="contact-card" onclick="window.open('https://t.me/leverageinvest','_blank')"><div class="contact-icon">✈️</div><div class="contact-label">Telegram</div><div class="contact-value">@leverageinvest</div></div>
+      <div id="tab-contact" class="tab" style="display:none">
+        <div style="margin-bottom:24px"><h1 class="fd" style="font-size:28px">💬 Contato</h1></div>
+        <div class="cg" style="margin-bottom:24px">
+          <div class="cc" onclick="window.open('https://wa.me/5511999999999','_blank')"><div class="cci">📱</div><div class="ccl">WhatsApp</div><div class="ccv">(11) 99999-9999</div></div>
+          <div class="cc" onclick="window.open('mailto:contato@leverageinvest.com')"><div class="cci">📧</div><div class="ccl">Email</div><div class="ccv">contato@leverageinvest.com</div></div>
+          <div class="cc" onclick="window.open('https://t.me/leverageinvest','_blank')"><div class="cci">✈️</div><div class="ccl">Telegram</div><div class="ccv">@leverageinvest</div></div>
         </div>
         <div class="card"><h2 style="font-size:16px;font-weight:700;margin-bottom:16px">✉️ Envie uma mensagem</h2>
-          <div class="form-group"><label class="form-label">Nome</label><input type="text" id="contactName" class="form-input" placeholder="Seu nome"></div>
-          <div class="form-group"><label class="form-label">Email</label><input type="email" id="contactEmail" class="form-input" placeholder="seu@email.com"></div>
-          <div class="form-group"><label class="form-label">Assunto</label><input type="text" id="contactSubject" class="form-input" placeholder="Como podemos ajudar?"></div>
-          <div class="form-group"><label class="form-label">Mensagem</label><textarea id="contactMsg" class="form-input" rows="4" placeholder="Sua mensagem..."></textarea></div>
-          <button class="btn btn-orange" onclick="sendContact()">Enviar</button>
+          <div class="fg"><label class="fl">Nome</label><input type="text" id="contactName" class="fi" placeholder="Seu nome"></div>
+          <div class="fg"><label class="fl">Email</label><input type="email" id="contactEmail" class="fi" placeholder="seu@email.com"></div>
+          <div class="fg"><label class="fl">Assunto</label><input type="text" id="contactSubject" class="fi" placeholder="Como podemos ajudar?"></div>
+          <div class="fg"><label class="fl">Mensagem</label><textarea id="contactMsg" class="fi" rows="4" placeholder="Sua mensagem..."></textarea></div>
+          <button class="btn bo" onclick="sendContact()">Enviar</button>
         </div>
       </div>
 
-      <!-- COPY TRADE -->
-      <div id="tab-copytrade" class="tab-content" style="display:none">
-        <div style="margin-bottom:24px"><h1 class="font-display" style="font-size:28px">🔄 Copy Trade</h1><p style="color:var(--text-muted);font-size:14px;margin-top:4px">Configure sua conta demo como master e copie para conta real</p></div>
-        
-        <div class="grid-2">
-          <div class="card card-glow">
+      <div id="tab-copytrade" class="tab" style="display:none">
+        <div style="margin-bottom:24px"><h1 class="fd" style="font-size:28px">🔄 Copy Trade</h1><p style="color:var(--muted);font-size:14px;margin-top:4px">Configure conta demo como master e copie para conta real</p></div>
+        <div class="g2">
+          <div class="card card-g">
             <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">📊 Conta Master (Demo)</h2>
-            <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px">Esta conta rodará o PipScalperEA com lote 0.10</p>
-            <div class="form-group"><label class="form-label">Número da conta</label><input type="text" id="masterAccount" class="form-input" placeholder="Ex: 12345678"></div>
-            <div class="form-group"><label class="form-label">Servidor</label><input type="text" id="masterServer" class="form-input" placeholder="Ex: Vantage-Demo"></div>
-            <button class="btn btn-orange btn-block" onclick="connectMaster()">🔗 Conectar Master</button>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Conta que rodará o PipScalperEA lote 0.10</p>
+            <div class="fg"><label class="fl">Número da conta</label><input type="text" id="masterAccount" class="fi" placeholder="Ex: 12345678"></div>
+            <div class="fg"><label class="fl">Servidor</label><input type="text" id="masterServer" class="fi" placeholder="Ex: Vantage-Demo"></div>
+            <button class="btn bo bblk" onclick="connectMaster()">🔗 Conectar Master</button>
             <div id="masterStatus" style="margin-top:12px"></div>
           </div>
-
-          <div class="card card-glow">
+          <div class="card card-g">
             <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">💰 Conta Follower (Real)</h2>
-            <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px">Esta conta receberá as cópias dos trades</p>
-            <div class="form-group"><label class="form-label">Número da conta</label><input type="text" id="followerAccount" class="form-input" placeholder="Ex: 87654321"></div>
-            <div class="form-group"><label class="form-label">Servidor</label><input type="text" id="followerServer" class="form-input" placeholder="Ex: Vantage-Real"></div>
-            <button class="btn btn-lilac btn-block" onclick="connectFollower()">💰 Conectar Follower</button>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Conta que receberá as cópias dos trades</p>
+            <div class="fg"><label class="fl">Número da conta</label><input type="text" id="followerAccount" class="fi" placeholder="Ex: 87654321"></div>
+            <div class="fg"><label class="fl">Servidor</label><input type="text" id="followerServer" class="fi" placeholder="Ex: Vantage-Real"></div>
+            <button class="btn bl bblk" onclick="connectFollower()">💰 Conectar Follower</button>
             <div id="followerStatus" style="margin-top:12px"></div>
           </div>
         </div>
-
         <div class="card" style="margin-top:20px">
-          <div class="card-head"><h2 class="font-display" style="font-size:18px">⚙️ Configurações de Cópia</h2></div>
-          <div class="lot-row">
-            <div class="form-group"><label class="form-label">Multiplicador de Lote</label><input type="number" id="copyLotMult" class="form-input" value="1.0" min="0.1" max="10" step="0.1"></div>
-            <div class="form-group"><label class="form-label">Lote Máximo</label><input type="number" id="copyMaxLot" class="form-input" value="1.0" min="0.01" max="100" step="0.01"></div>
+          <div style="margin-bottom:16px"><h2 class="fd" style="font-size:18px">⚙️ Configurações de Cópia</h2></div>
+          <div class="g2">
+            <div class="fg"><label class="fl">Multiplicador de Lote</label><input type="number" id="copyLotMult" class="fi" value="1.0" min="0.1" max="10" step="0.1"></div>
+            <div class="fg"><label class="fl">Lote Máximo</label><input type="number" id="copyMaxLot" class="fi" value="1.0" min="0.01" max="100" step="0.01"></div>
           </div>
-          <div class="lot-row">
-            <div class="form-group"><label class="form-label">Copiar SL</label><label class="toggle-switch"><input type="checkbox" id="copySL" checked><span class="toggle-slider"></span></label></div>
-            <div class="form-group"><label class="form-label">Copiar TP</label><label class="toggle-switch"><input type="checkbox" id="copyTP" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <button class="btn btn-orange" onclick="syncTrades()">🔄 Sincronizar Trades</button>
+          <button class="btn bo" onclick="syncTrades()">🔄 Sincronizar Trades</button>
         </div>
-
         <div class="card" style="margin-top:20px">
-          <div class="card-head"><h2 class="font-display" style="font-size:18px">📋 Configurações Ativas</h2></div>
+          <div style="margin-bottom:16px"><h2 class="fd" style="font-size:18px">📋 Configurações Ativas</h2></div>
           <div id="copyConfigs"></div>
         </div>
       </div>
+
     </main>
   </div>
 </div>
 
-<!-- MODAL: CONNECT MT5 -->
-<div id="connectModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('connectModal')">
-  <div class="modal fade-in">
-    <h2 class="modal-title font-display">🔗 Conectar Conta MT5</h2>
-    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">Adicione os dados da sua conta MetaTrader 5</p>
-    <div id="mt5Form1">
-      <div class="form-group"><label class="form-label">Número da conta</label><input type="text" id="mt5Account" class="form-input" placeholder="Ex: 12345678"></div>
-      <div class="form-group"><label class="form-label">Servidor</label><input type="text" id="mt5Server" class="form-input" placeholder="Ex: MetaQuotes-Demo"></div>
-      <div style="background:rgba(155,89,182,.1);border:1px solid rgba(155,89,182,.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--lilac-light)">🔒 Seus dados são criptografados e seguros</div>
-      <button class="btn btn-orange btn-block" onclick="saveMT5Account()">✅ Conectar</button>
-    </div>
+<div id="connectModal" class="mover" style="display:none" onclick="if(event.target===this)closeModal('connectModal')">
+  <div class="modal fade">
+    <h2 class="mt fd">🔗 Conectar Conta MT5</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Adicione os dados da sua conta MetaTrader 5</p>
+    <div class="fg"><label class="fl">Número da conta</label><input type="text" id="mt5Account" class="fi" placeholder="Ex: 12345678"></div>
+    <div class="fg"><label class="fl">Servidor</label><input type="text" id="mt5Server" class="fi" placeholder="Ex: MetaQuotes-Demo"></div>
+    <div style="background:rgba(155,89,182,.1);border:1px solid rgba(155,89,182,.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:#BB8FCE">🔒 Seus dados são criptografados e seguros</div>
+    <button class="btn bo bblk" onclick="saveMT5Account()">✅ Conectar</button>
   </div>
 </div>
 
-<!-- MODAL: ROBOT LOT CONFIG -->
-<div id="lotModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('lotModal')">
-  <div class="modal fade-in" style="max-width:600px">
+<div id="lotModal" class="mover" style="display:none" onclick="if(event.target===this)closeModal('lotModal')">
+  <div class="modal fade" style="max-width:600px">
     <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:20px">
-      <div><div style="font-size:40px" id="lotModalIcon">🤖</div><h2 class="modal-title font-display" id="lotModalName">—</h2><div style="color:var(--lilac-light);font-size:13px" id="lotModalStrategy">—</div></div>
-      <button onclick="closeModal('lotModal')" style="background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer">✕</button>
+      <div><div style="font-size:40px" id="lotModalIcon">🤖</div><h2 class="mt fd" id="lotModalName">—</h2><div style="color:#BB8FCE;font-size:13px" id="lotModalStrategy">—</div></div>
+      <button onclick="closeModal('lotModal')" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">✕</button>
     </div>
-
-    <div style="background:var(--bg-card2);border-radius:12px;padding:16px;margin-bottom:20px">
-      <div style="font-size:12px;color:var(--text-muted)">SALDO DA CONTA</div>
+    <div style="background:var(--bg3);border-radius:12px;padding:16px;margin-bottom:20px">
+      <div style="font-size:12px;color:var(--muted)">SALDO DA CONTA</div>
       <div style="font-size:20px;font-weight:700" id="lotModalBalance">$0.00</div>
     </div>
-
-    <div class="lot-panel">
+    <div style="background:var(--bg3);border-radius:12px;padding:20px;margin-top:16px">
       <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">⚙️ Configuração de Lote</h3>
-
-      <div class="form-group">
-        <label class="form-label">Modo de Lote</label>
+      <div class="fg">
+        <label class="fl">Modo de Lote</label>
         <div style="display:flex;gap:10px">
-          <button class="btn btn-sm" id="lotDynamicBtn" onclick="setLotMode(true)" style="flex:1;background:var(--orange);color:#fff">📈 Dinâmico (recomendado)</button>
-          <button class="btn btn-sm" id="lotFixedBtn" onclick="setLotMode(false)" style="flex:1;background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border)">📌 Fixo</button>
+          <button class="btn bsm" id="lotDynamicBtn" onclick="setLotMode(true)" style="flex:1;background:var(--orange);color:#fff">📈 Dinâmico</button>
+          <button class="btn bsm" id="lotFixedBtn" onclick="setLotMode(false)" style="flex:1;background:var(--bg2);color:var(--muted);border:1px solid var(--border)">📌 Fixo</button>
         </div>
       </div>
-
       <div id="dynamicLotConfig">
-        <div class="range-group">
-          <div class="range-header"><span class="range-label">% Risco por Trade</span><span class="range-value" id="riskVal">2.0%</span></div>
+        <div class="rg">
+          <div class="rh"><span class="rl">% Risco por Trade</span><span class="rv" id="riskVal">2.0%</span></div>
           <input type="range" id="riskRange" min="0.5" max="10" step="0.5" value="2" oninput="updateLotCalc()">
-          <div class="risk-indicator"><div class="risk-bar" id="rb1"></div><div class="risk-bar" id="rb2"></div><div class="risk-bar" id="rb3"></div><div class="risk-bar" id="rb4"></div><div class="risk-bar" id="rb5"></div></div>
         </div>
-        <div class="lot-row">
-          <div class="form-group"><label class="form-label">Stop Loss (pips)</label><input type="number" id="slPips" class="form-input" value="50" min="5" max="500" onchange="updateLotCalc()"></div>
-          <div class="form-group"><label class="form-label">Take Profit (pips)</label><input type="number" id="tpPips" class="form-input" value="100" min="10" max="1000" onchange="updateLotCalc()"></div>
+        <div class="g2">
+          <div class="fg"><label class="fl">Stop Loss (pips)</label><input type="number" id="slPips" class="fi" value="50" min="5" max="500" onchange="updateLotCalc()"></div>
+          <div class="fg"><label class="fl">Take Profit (pips)</label><input type="number" id="tpPips" class="fi" value="100" min="10" max="1000"></div>
         </div>
-        <div class="lot-row">
-          <div class="form-group"><label class="form-label">Multiplicador de Lote</label><input type="number" id="lotMult" class="form-input" value="1.0" min="0.1" max="10" step="0.1" onchange="updateLotCalc()"></div>
-          <div class="form-group"><label class="form-label">Lote Máximo</label><input type="number" id="maxLot" class="form-input" value="1.0" min="0.01" max="100" step="0.01"></div>
+        <div class="g2">
+          <div class="fg"><label class="fl">Multiplicador</label><input type="number" id="lotMult" class="fi" value="1.0" min="0.1" max="10" step="0.1" onchange="updateLotCalc()"></div>
+          <div class="fg"><label class="fl">Lote Máximo</label><input type="number" id="maxLot" class="fi" value="1.0" min="0.01" max="100" step="0.01"></div>
         </div>
       </div>
-
       <div id="fixedLotConfig" style="display:none">
-        <div class="form-group"><label class="form-label">Lote Fixo</label><input type="number" id="fixedLotInput" class="form-input" value="0.01" min="0.01" max="100" step="0.01"></div>
+        <div class="fg"><label class="fl">Lote Fixo</label><input type="number" id="fixedLotInput" class="fi" value="0.01" min="0.01" max="100" step="0.01"></div>
       </div>
-
-      <div class="lot-row">
-        <div class="form-group"><label class="form-label">Max Trades/Dia</label><input type="number" id="maxDailyTrades" class="form-input" value="10" min="1" max="50"></div>
-        <div class="form-group"><label class="form-label">Max Perda/Dia (%)</label><input type="number" id="maxDailyLoss" class="form-input" value="5" min="1" max="20" step="0.5"></div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Max Trades/Dia</label><input type="number" id="maxDailyTrades" class="fi" value="10" min="1" max="50"></div>
+        <div class="fg"><label class="fl">Max Perda/Dia (%)</label><input type="number" id="maxDailyLoss" class="fi" value="5" min="1" max="20" step="0.5"></div>
       </div>
-
-      <div class="form-group">
-        <label class="form-label">Trailing Stop</label>
+      <div class="fg">
+        <label class="fl">Trailing Stop</label>
         <div style="display:flex;align-items:center;gap:12px">
-          <label class="toggle-switch"><input type="checkbox" id="trailingStop"><span class="toggle-slider"></span></label>
-          <span style="font-size:13px;color:var(--text-muted)" id="trailingLabel">Desativado</span>
+          <label class="tog"><input type="checkbox" id="trailingStop"><span class="tsl"></span></label>
+          <span style="font-size:13px;color:var(--muted)" id="trailingLabel">Desativado</span>
         </div>
         <div id="trailingPipsGroup" style="display:none;margin-top:8px">
-          <div class="form-group" style="margin-bottom:0"><label class="form-label">Trailing Stop (pips)</label><input type="number" id="trailingPips" class="form-input" value="30" min="5" max="200"></div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Trailing Stop (pips)</label><input type="number" id="trailingPips" class="fi" value="30" min="5" max="200"></div>
         </div>
       </div>
     </div>
-
-    <div class="lot-preview">
-      <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">LOTE CALCULADO</div>
-      <div class="lot-big" id="calculatedLot">0.01</div>
-      <div class="lot-detail" id="lotDetail">Risco: $0.00 por trade</div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:16px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">LOTE CALCULADO</div>
+      <div style="font-size:32px;font-weight:800;color:var(--orange)" id="calculatedLot">0.01</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px" id="lotDetail">Risco: $0.00 por trade</div>
     </div>
-
     <div style="display:flex;gap:10px;margin-top:20px">
-      <button class="btn btn-outline" style="flex:1" onclick="closeModal('lotModal')">Cancelar</button>
-      <button class="btn btn-orange" style="flex:2" onclick="saveLotConfig()">💾 Salvar & Ativar</button>
+      <button class="btn bout" style="flex:1" onclick="closeModal('lotModal')">Cancelar</button>
+      <button class="btn bo" style="flex:2" onclick="saveLotConfig()">💾 Salvar & Ativar</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast" class="toast"><div id="toastContent"></div></div>
 
 <script>
-const API='';let TOKEN=localStorage.getItem('li_token'),USER=null,DASH=null,currentInstanceId=null,currentBalance=0;
+const API='';
+let TOKEN=localStorage.getItem('li_token'),USER=null,DASH=null,currentInstanceId=null,currentBalance=0;
 
-async function api(path,opts={}){const h={'Content-Type':'application/json',...opts.headers};if(TOKEN)h['Authorization']=`Bearer ${TOKEN}`;const r=await fetch(API+path,{...opts,headers:h});return r.json()}
-function showToast(msg,color='green'){const t=document.getElementById('toast'),c=document.getElementById('toastContent');t.className=`toast toast-${color}`;c.innerHTML=msg;t.style.display='block';setTimeout(()=>t.style.display='none',4000)}
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+id).classList.add('active')}
-function showTab(id,btn){document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none');document.getElementById('tab-'+id).style.display='block';document.querySelectorAll('.menu-item').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='orders')loadOrders();if(id==='settings'&&USER){document.getElementById('settName').value=USER.name||'';document.getElementById('settEmail').value=USER.email||'';document.getElementById('settWhatsapp').value=USER.whatsapp||''}}
-function showModal(id){document.getElementById(id).style.display='flex'}function closeModal(id){document.getElementById(id).style.display='none'}
+async function api(path,opts={}){
+  const h={'Content-Type':'application/json',...opts.headers};
+  if(TOKEN)h['Authorization']='Bearer '+TOKEN;
+  const r=await fetch(API+path,{...opts,headers:h});
+  return r.json();
+}
 
-async function doLogin(){const e=document.getElementById('loginEmail').value,p=document.getElementById('loginPassword').value,err=document.getElementById('loginError');if(!e||!p){err.textContent='Preencha todos os campos';err.style.display='block';return}try{const r=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:e,password:p})});if(r.token){TOKEN=r.token;localStorage.setItem('li_token',TOKEN);USER=r.user;enterDashboard()}else{err.textContent=r.detail||'Erro';err.style.display='block'}}catch(x){err.textContent='Erro de conexão';err.style.display='block'}}
-async function doRegister(){const n=document.getElementById('regName').value,e=document.getElementById('regEmail').value,p=document.getElementById('regPhone').value,pass=document.getElementById('regPassword').value,err=document.getElementById('regError');if(!n||!e||!pass){err.textContent='Preencha nome, email e senha';err.style.display='block';return}try{const r=await api('/api/auth/register',{method:'POST',body:JSON.stringify({name:n,email:e,phone:p,password:pass})});if(r.token){TOKEN=r.token;localStorage.setItem('li_token',TOKEN);USER=r.user;enterDashboard()}else{err.textContent=r.detail||'Erro';err.style.display='block'}}catch(x){err.textContent='Erro de conexão';err.style.display='block'}}
+function showToast(msg,color){
+  const t=document.getElementById('toast'),c=document.getElementById('toastContent');
+  t.className='toast t'+(color||'g');
+  c.innerHTML=msg;
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',4000);
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>{p.classList.remove('on')});
+  document.getElementById('pg-'+id).classList.add('on');
+}
+
+function showTab(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.style.display='none');
+  document.getElementById('tab-'+id).style.display='block';
+  document.querySelectorAll('.mi').forEach(b=>b.classList.remove('act'));
+  if(btn)btn.classList.add('act');
+  if(id==='orders')loadOrders();
+  if(id==='copytrade')loadCopyConfigs();
+  if(id==='settings'&&USER){
+    document.getElementById('settName').value=USER.name||'';
+    document.getElementById('settEmail').value=USER.email||'';
+    document.getElementById('settWhatsapp').value=USER.whatsapp||'';
+  }
+}
+
+function showModal(id){document.getElementById(id).style.display='flex'}
+function closeModal(id){document.getElementById(id).style.display='none'}
+
+async function doLogin(){
+  const e=document.getElementById('loginEmail').value;
+  const p=document.getElementById('loginPassword').value;
+  const err=document.getElementById('loginError');
+  if(!e||!p){err.textContent='Preencha todos os campos';err.style.display='block';return}
+  try{
+    const r=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:e,password:p})});
+    if(r.token){TOKEN=r.token;localStorage.setItem('li_token',TOKEN);USER=r.user;enterDashboard()}
+    else{err.textContent=r.detail||'Erro';err.style.display='block'}
+  }catch(x){err.textContent='Erro de conexão';err.style.display='block'}
+}
+
+async function doRegister(){
+  const n=document.getElementById('regName').value;
+  const e=document.getElementById('regEmail').value;
+  const p=document.getElementById('regPhone').value;
+  const pass=document.getElementById('regPassword').value;
+  const err=document.getElementById('regError');
+  if(!n||!e||!pass){err.textContent='Preencha nome, email e senha';err.style.display='block';return}
+  try{
+    const r=await api('/api/auth/register',{method:'POST',body:JSON.stringify({name:n,email:e,phone:p,password:pass})});
+    if(r.token){TOKEN=r.token;localStorage.setItem('li_token',TOKEN);USER=r.user;enterDashboard()}
+    else{err.textContent=r.detail||'Erro';err.style.display='block'}
+  }catch(x){err.textContent='Erro de conexão';err.style.display='block'}
+}
+
 function doLogout(){TOKEN=null;USER=null;localStorage.removeItem('li_token');showPage('login')}
-async function enterDashboard(){showPage('dashboard');updateUserUI();loadDashboard();loadRobots();setInterval(loadDashboard,10000)}
-function updateUserUI(){if(!USER)return;document.getElementById('userName').textContent=USER.name;document.getElementById('userAvatar').textContent=USER.name.charAt(0).toUpperCase();document.getElementById('userPlan').textContent=(USER.plan||'basic').toUpperCase()}
 
-async function loadDashboard(){try{DASH=await api('/api/dashboard');if(DASH.detail){doLogout();return}document.getElementById('statBalance').textContent='$'+(DASH.summary?.total_balance||0).toFixed(2);const t=DASH.summary?.profit_today||0,w=DASH.summary?.profit_week||0;document.getElementById('statToday').textContent=(t>=0?'+':'')+'$'+t.toFixed(2);document.getElementById('statToday').style.color=t>=0?'var(--green)':'var(--red)';document.getElementById('statWeek').textContent=(w>=0?'+':'')+'$'+w.toFixed(2);document.getElementById('statWeek').style.color=w>=0?'var(--lilac-light)':'var(--red)';document.getElementById('statRobots').textContent=DASH.summary?.active_robots||0;const c=document.getElementById('connDot'),ct=document.getElementById('connText');if(DASH.accounts&&DASH.accounts.length>0){c.className='status-dot dot-on';ct.textContent='MT5 Conectado';document.getElementById('connectMT5Box').style.display='none';document.getElementById('accountsSection').style.display='block';renderAccounts(DASH.accounts)}else{c.className='status-dot dot-connecting';ct.textContent='Conecte o MT5';document.getElementById('connectMT5Box').style.display='block';document.getElementById('accountsSection').style.display='none'}renderRecentOrders(DASH.recent_orders||[])}catch(e){}}
+async function enterDashboard(){
+  showPage('dashboard');
+  updateUserUI();
+  loadDashboard();
+  loadRobots();
+  setInterval(loadDashboard,10000);
+}
 
-function renderAccounts(a){document.getElementById('accountsList').innerHTML=a.map(x=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:var(--bg-card2);border-radius:12px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">📊</div><div><div style="font-weight:700">Conta #${x.account_number}</div><div style="font-size:12px;color:var(--text-muted)">${x.server}</div></div></div><div style="display:flex;gap:24px;align-items:center"><div style="text-align:right"><div style="font-size:11px;color:var(--text-muted)">SALDO</div><div style="font-weight:700;font-size:16px">$${x.balance.toFixed(2)}</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--text-muted)">LUCRO HOJE</div><div style="font-weight:700;color:${x.profit_today>=0?'var(--green)':'var(--red)'}">${x.profit_today>=0?'+':''}$${x.profit_today.toFixed(2)}</div></div><span class="badge ${x.is_connected?'badge-green':'badge-red'}">${x.is_connected?'● Online':'● Offline'}</span></div></div>`).join('')}
+function updateUserUI(){
+  if(!USER)return;
+  document.getElementById('userName').textContent=USER.name;
+  document.getElementById('userAvatar').textContent=USER.name.charAt(0).toUpperCase();
+  document.getElementById('userPlan').textContent=(USER.plan||'basic').toUpperCase();
+}
 
-function renderRecentOrders(o){const b=document.getElementById('recentOrdersBody');if(!o.length){b.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Nenhuma ordem ainda</td></tr>';return}b.innerHTML=o.map(x=>`<tr><td><b>${x.symbol}</b></td><td><span class="badge ${x.type==='buy'?'badge-green':'badge-red'}">${x.type.toUpperCase()}</span></td><td>${x.volume}</td><td>${x.open_price}</td><td style="color:${x.profit>=0?'var(--green)':'var(--red)';font-weight:700}">${x.profit>=0?'+':''}$${x.profit.toFixed(2)}</td><td><span class="badge ${x.status==='open'?'badge-orange':'badge-green'}">${x.status}</span></td></tr>`).join('')}
+async function loadDashboard(){
+  try{
+    DASH=await api('/api/dashboard');
+    if(DASH.detail){doLogout();return}
+    document.getElementById('statBalance').textContent='$'+(DASH.summary?.total_balance||0).toFixed(2);
+    const t=DASH.summary?.profit_today||0;
+    const w=DASH.summary?.profit_week||0;
+    document.getElementById('statToday').textContent=(t>=0?'+':'')+'$'+t.toFixed(2);
+    document.getElementById('statToday').style.color=t>=0?'var(--green)':'var(--red)';
+    document.getElementById('statWeek').textContent=(w>=0?'+':'')+'$'+w.toFixed(2);
+    document.getElementById('statWeek').style.color=w>=0?'#BB8FCE':'var(--red)';
+    document.getElementById('statRobots').textContent=DASH.summary?.active_robots||0;
+    const c=document.getElementById('connDot'),ct=document.getElementById('connText');
+    if(DASH.accounts&&DASH.accounts.length>0){
+      c.className='sdot don';ct.textContent='MT5 Conectado';
+      document.getElementById('connectMT5Box').style.display='none';
+      document.getElementById('accountsSection').style.display='block';
+      renderAccounts(DASH.accounts);
+    }else{
+      c.className='sdot dcon';ct.textContent='Conecte o MT5';
+      document.getElementById('connectMT5Box').style.display='block';
+      document.getElementById('accountsSection').style.display='none';
+    }
+    renderRecentOrders(DASH.recent_orders||[]);
+  }catch(e){}
+}
 
-async function loadRobots(){try{const r=await api('/api/robots');if(r.detail)return;renderRobots(r)}catch(e){}}
-function renderRobots(robots){const g=document.getElementById('robotsGrid');g.innerHTML=robots.map(r=>{const inst=r.instance,isR=inst?.is_running;return`<div class="robot-card ${isR?'active':''} fade-in"><div style="display:flex;justify-content:space-between;align-items:start"><div><div class="robot-icon">${r.icon}</div><div class="robot-name font-display">${r.name}</div><div class="robot-strategy">${r.strategy}</div></div><span class="badge ${isR?'badge-green':'badge-lilac'}">${isR?'● ATIVO':'● PARADO'}</span></div><div class="robot-desc">${r.description}</div><div class="robot-symbols">${r.symbols.map(s=>`<span class="robot-symbol">${s}</span>`).join('')}</div>${inst?`<div class="robot-stats"><div><div class="robot-stat-label">Lucro Total</div><div class="robot-stat-value" style="color:${inst.profit_total>=0?'var(--green)':'var(--red)'}">${inst.profit_total>=0?'+':''}$${inst.profit_total.toFixed(2)}</div></div><div><div class="robot-stat-label">Trades</div><div class="robot-stat-value">${inst.trades_count}</div></div><div><div class="robot-stat-label">Win Rate</div><div class="robot-stat-value" style="color:var(--green)">${inst.win_rate}%</div></div></div><div style="display:flex;gap:8px"><button class="btn ${isR?'btn-outline':'btn-orange'}" style="flex:2" onclick="toggleRobot(${inst.id})">${isR?'⏸ Parar':'▶ Copiar & Operar'}</button><button class="btn btn-outline btn-sm" style="flex:0;padding:10px" onclick="openLotConfig(${inst.id},'${r.icon}','${r.name}','${r.strategy}',${inst.settings?.risk_per_trade||2},${inst.settings?.stop_loss_pips||50},${inst.settings?.take_profit_pips||100},${inst.settings?.lot_multiplier||1},${inst.settings?.max_lot||1},${inst.settings?.use_dynamic_lot!==false},${inst.settings?.fixed_lot||0.01},${inst.settings?.max_daily_trades||10},${inst.settings?.max_daily_loss||5},${inst.settings?.trailing_stop||false},${inst.settings?.trailing_stop_pips||30})">⚙️</button></div>`:`<button class="btn btn-orange btn-block" onclick="activateRobot(${r.id},'${r.icon}','${r.name}','${r.strategy}','${r.description}','${r.symbols.join(',')}',('${r.min_plan}'))">🤖 Ativar Robô</button>`}`}).join('')}
+function renderAccounts(a){
+  document.getElementById('accountsList').innerHTML=a.map(x=>
+    '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:var(--bg3);border-radius:12px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">📊</div><div><div style="font-weight:700">Conta #'+x.account_number+'</div><div style="font-size:12px;color:var(--muted)">'+x.server+'</div></div></div><div style="display:flex;gap:24px;align-items:center"><div style="text-align:right"><div style="font-size:11px;color:var(--muted)">SALDO</div><div style="font-weight:700;font-size:16px">$'+x.balance.toFixed(2)+'</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--muted)">LUCRO HOJE</div><div style="font-weight:700;color:'+(x.profit_today>=0?'var(--green)':'var(--red)')+'">'+(x.profit_today>=0?'+':'')+'$'+x.profit_today.toFixed(2)+'</div></div><span class="badge '+(x.is_connected?'bg':'br')+'">'+(x.is_connected?'● Online':'● Offline')+'</span></div></div>'
+  ).join('');
+}
 
-function activateRobot(id,icon,name,strategy,desc,symbols,minPlan){const content=document.getElementById('lotModal');if(!DASH?.accounts?.length){showToast('Conecte sua conta MT5 primeiro!','orange');showModal('connectModal');return}const bal=DASH.accounts[0].balance;showLotModal(id,icon,name,strategy,bal)}
+function renderRecentOrders(o){
+  const b=document.getElementById('recentOrdersBody');
+  if(!o.length){b.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted)">Nenhuma ordem ainda</td></tr>';return}
+  b.innerHTML=o.map(x=>
+    '<tr><td><b>'+x.symbol+'</b></td><td><span class="badge '+(x.type==='buy'?'bg':'br')+'">'+x.type.toUpperCase()+'</span></td><td>'+x.volume+'</td><td>'+x.open_price+'</td><td style="color:'+(x.profit>=0?'var(--green)':'var(--red)')+';font-weight:700">'+(x.profit>=0?'+':'')+'$'+x.profit.toFixed(2)+'</td><td><span class="badge '+(x.status==='open'?'bo2':'bg')+'">'+x.status+'</span></td></tr>'
+  ).join('');
+}
 
-function showLotModal(robotId,icon,name,strategy,balance){currentInstanceId=null;currentBalance=balance;document.getElementById('lotModalIcon').textContent=icon;document.getElementById('lotModalName').textContent=name;document.getElementById('lotModalStrategy').textContent=strategy;document.getElementById('lotModalBalance').textContent='$'+balance.toFixed(2);document.getElementById('riskRange').value=2;document.getElementById('slPips').value=50;document.getElementById('tpPips').value=100;document.getElementById('lotMult').value=1;document.getElementById('maxLot').value=1;document.getElementById('maxDailyTrades').value=10;document.getElementById('maxDailyLoss').value=5;document.getElementById('trailingStop').checked=false;document.getElementById('trailingPips').value=30;document.getElementById('trailingLabel').textContent='Desativado';document.getElementById('trailingPipsGroup').style.display='none';setLotMode(true);updateLotCalc();showModal('lotModal');window._pendingRobotId=robotId}
+async function loadRobots(){
+  try{const r=await api('/api/robots');if(!r.detail)renderRobots(r)}catch(e){}
+}
 
-function openLotConfig(instId,icon,name,strategy,risk,sl,tp,mult,maxLot,useDyn,fixed,maxTrades,maxLoss,trailing,trailingPips){currentInstanceId=instId;currentBalance=DASH?.accounts?.[0]?.balance||0;document.getElementById('lotModalIcon').textContent=icon;document.getElementById('lotModalName').textContent=name;document.getElementById('lotModalStrategy').textContent=strategy;document.getElementById('lotModalBalance').textContent='$'+currentBalance.toFixed(2);document.getElementById('riskRange').value=risk;document.getElementById('slPips').value=sl;document.getElementById('tpPips').value=tp;document.getElementById('lotMult').value=mult;document.getElementById('maxLot').value=maxLot;document.getElementById('maxDailyTrades').value=maxTrades;document.getElementById('maxDailyLoss').value=maxLoss;document.getElementById('trailingStop').checked=trailing;document.getElementById('trailingPips').value=trailingPips;document.getElementById('trailingLabel').textContent=trailing?'Ativado':'Desativado';document.getElementById('trailingPipsGroup').style.display=trailing?'block':'none';setLotMode(useDyn);document.getElementById('fixedLotInput').value=fixed||0.01;updateLotCalc();showModal('lotModal')}
+function renderRobots(robots){
+  const g=document.getElementById('robotsGrid');
+  g.innerHTML=robots.map(r=>{
+    const inst=r.instance;
+    const isR=inst&&inst.is_running;
+    let html='<div class="rc '+(isR?'act':'')+' fade">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:start"><div><div class="ri">'+r.icon+'</div><div class="rn fd">'+r.name+'</div><div class="rs">'+r.strategy+'</div></div><span class="badge '+(isR?'bg':'bl2')+'">'+(isR?'● ATIVO':'● PARADO')+'</span></div>';
+    html+='<div class="rd">'+r.description+'</div>';
+    html+='<div class="rsy">'+r.symbols.map(s=>'<span class="rsp">'+s+'</span>').join('')+'</div>';
+    if(inst){
+      html+='<div class="rst"><div><div class="rsl">Lucro Total</div><div class="rsv" style="color:'+(inst.profit_total>=0?'var(--green)':'var(--red)')+'">'+(inst.profit_total>=0?'+':'')+'$'+inst.profit_total.toFixed(2)+'</div></div><div><div class="rsl">Trades</div><div class="rsv">'+inst.trades_count+'</div></div><div><div class="rsl">Win Rate</div><div class="rsv" style="color:var(--green)">'+inst.win_rate+'%</div></div></div>';
+      html+='<div style="display:flex;gap:8px">';
+      html+='<button class="btn '+(isR?'bout':'bo')+'" style="flex:2" onclick="toggleRobot('+inst.id+')">'+(isR?'⏸ Parar':'▶ Copiar & Operar')+'</button>';
+      html+='<button class="btn bout bsm" style="flex:0;padding:10px" onclick="openLotConfig('+inst.id+')">⚙️</button>';
+      html+='</div>';
+    }else{
+      html+='<button class="btn bo bblk" onclick="activateRobot('+r.id+')">🤖 Ativar Robô</button>';
+    }
+    html+='</div>';
+    return html;
+  }).join('');
+}
 
-function setLotMode(dynamic){document.getElementById('lotDynamicBtn').style.background=dynamic?'var(--orange)':'var(--bg-card)';document.getElementById('lotDynamicBtn').style.color=dynamic?'#fff':'var(--text-muted)';document.getElementById('lotDynamicBtn').style.border=dynamic?'none':'1px solid var(--border)';document.getElementById('lotFixedBtn').style.background=!dynamic?'var(--orange)':'var(--bg-card)';document.getElementById('lotFixedBtn').style.color=!dynamic?'#fff':'var(--text-muted)';document.getElementById('lotFixedBtn').style.border=!dynamic?'none':'1px solid var(--border)';document.getElementById('dynamicLotConfig').style.display=dynamic?'block':'none';document.getElementById('fixedLotConfig').style.display=dynamic?'none':'block'}
+function activateRobot(id){
+  if(!DASH||!DASH.accounts||!DASH.accounts.length){
+    showToast('Conecte sua conta MT5 primeiro!','o');
+    showModal('connectModal');
+    return;
+  }
+  window._pendingRobotId=id;
+  showLotModal(id);
+}
 
-function updateLotCalc(){const bal=currentBalance,risk=parseFloat(document.getElementById('riskRange').value),sl=parseInt(document.getElementById('slPips').value)||50,mult=parseFloat(document.getElementById('lotMult').value)||1,maxL=parseFloat(document.getElementById('maxLot').value)||1;document.getElementById('riskVal').textContent=risk.toFixed(1)+'%';const riskAmt=bal*(risk/100);const pipVal=10;let lot=sl>0?riskAmt/(sl*pipVal):riskAmt/100;lot*=mult;lot=Math.max(0.01,Math.min(Math.round(lot*100)/100,maxL));document.getElementById('calculatedLot').textContent=lot.toFixed(2);document.getElementById('lotDetail').textContent=`Risco: $${riskAmt.toFixed(2)} por trade | SL: ${sl} pips`;const bars=document.querySelectorAll('.risk-bar');bars.forEach((b,i)=>{b.className='risk-bar';if(risk<=2&&i<2)b.classList.add('active-low');else if(risk<=5&&i<3)b.classList.add('active-med');else if(risk>5&&i<5)b.classList.add('active-high')})}
+function showLotModal(robotId){
+  currentInstanceId=null;
+  currentBalance=DASH?.accounts?.[0]?.balance||0;
+  document.getElementById('lotModalIcon').textContent='🤖';
+  document.getElementById('lotModalName').textContent='Configurar Lote';
+  document.getElementById('lotModalStrategy').textContent='Ajuste o lote do robô';
+  document.getElementById('lotModalBalance').textContent='$'+currentBalance.toFixed(2);
+  document.getElementById('riskRange').value=2;
+  document.getElementById('slPips').value=50;
+  document.getElementById('tpPips').value=100;
+  document.getElementById('lotMult').value=1;
+  document.getElementById('maxLot').value=1;
+  document.getElementById('maxDailyTrades').value=10;
+  document.getElementById('maxDailyLoss').value=5;
+  document.getElementById('trailingStop').checked=false;
+  document.getElementById('trailingPips').value=30;
+  document.getElementById('trailingLabel').textContent='Desativado';
+  document.getElementById('trailingPipsGroup').style.display='none';
+  setLotMode(true);
+  updateLotCalc();
+  showModal('lotModal');
+  window._pendingRobotId=robotId;
+}
 
-document.getElementById('trailingStop').addEventListener('change',function(){const on=this.checked;document.getElementById('trailingLabel').textContent=on?'Ativado':'Desativado';document.getElementById('trailingPipsGroup').style.display=on?'block':'none'});
+function openLotConfig(instId){
+  currentInstanceId=instId;
+  currentBalance=DASH?.accounts?.[0]?.balance||0;
+  document.getElementById('lotModalBalance').textContent='$'+currentBalance.toFixed(2);
+  updateLotCalc();
+  showModal('lotModal');
+}
 
-async function saveLotConfig(){const isDynamic=document.getElementById('dynamicLotBtn').style.background==='var(--orange)';const payload={risk_per_trade:parseFloat(document.getElementById('riskRange').value),max_lot:parseFloat(document.getElementById('maxLot').value),stop_loss_pips:parseInt(document.getElementById('slPips').value),take_profit_pips:parseInt(document.getElementById('tpPips').value),lot_multiplier:parseFloat(document.getElementById('lotMult').value),max_daily_trades:parseInt(document.getElementById('maxDailyTrades').value),max_daily_loss:parseFloat(document.getElementById('maxDailyLoss').value),trailing_stop:document.getElementById('trailingStop').checked,trailing_stop_pips:parseInt(document.getElementById('trailingPips').value),use_dynamic_lot:isDynamic,fixed_lot:parseFloat(document.getElementById('fixedLotInput').value)||0.01};if(currentInstanceId){try{const r=await api('/api/robots/settings',{method:'PUT',body:JSON.stringify({instance_id:currentInstanceId,...payload})});if(r.ok){showToast('✅ Configurações salvas! Lote: '+r.calculated_lot);closeModal('lotModal');loadRobots();return}}catch(e){}}else{try{const r=await api('/api/robots/instance',{method:'POST',body:JSON.stringify({robot_id:window._pendingRobotId,mt5_account_id:DASH.accounts[0].id})});if(r.ok||r.instance_id){const instId=r.instance_id||r.id;if(instId){await api('/api/robots/settings',{method:'PUT',body:JSON.stringify({instance_id:instId,...payload})})}showToast('✅ Robô ativado com lote configurado!');closeModal('lotModal');loadRobots();loadDashboard();return}else{showToast('❌ '+(r.detail||'Erro'),'red')}}catch(e){}}showToast('❌ Erro ao salvar','red')}
+function setLotMode(dynamic){
+  document.getElementById('lotDynamicBtn').style.background=dynamic?'var(--orange)':'var(--bg2)';
+  document.getElementById('lotDynamicBtn').style.color=dynamic?'#fff':'var(--muted)';
+  document.getElementById('lotFixedBtn').style.background=!dynamic?'var(--orange)':'var(--bg2)';
+  document.getElementById('lotFixedBtn').style.color=!dynamic?'#fff':'var(--muted)';
+  document.getElementById('dynamicLotConfig').style.display=dynamic?'block':'none';
+  document.getElementById('fixedLotConfig').style.display=dynamic?'none':'block';
+}
 
-async function toggleRobot(id){try{const r=await api('/api/robots/toggle',{method:'POST',body:JSON.stringify({instance_id:id})});if(r.ok){showToast(r.is_running?'▶ Robô iniciado!':'⏸ Robô parado');loadRobots()}}catch(e){}}
+function updateLotCalc(){
+  const bal=currentBalance;
+  const risk=parseFloat(document.getElementById('riskRange').value);
+  const sl=parseInt(document.getElementById('slPips').value)||50;
+  const mult=parseFloat(document.getElementById('lotMult').value)||1;
+  const maxL=parseFloat(document.getElementById('maxLot').value)||1;
+  document.getElementById('riskVal').textContent=risk.toFixed(1)+'%';
+  const riskAmt=bal*(risk/100);
+  let lot=sl>0?riskAmt/(sl*10):riskAmt/100;
+  lot*=mult;
+  lot=Math.max(0.01,Math.min(Math.round(lot*100)/100,maxL));
+  document.getElementById('calculatedLot').textContent=lot.toFixed(2);
+  document.getElementById('lotDetail').textContent='Risco: $'+riskAmt.toFixed(2)+' por trade | SL: '+sl+' pips';
+}
 
-async function loadOrders(){try{const o=await api('/api/orders?limit=50');const b=document.getElementById('allOrdersBody');if(!o.length){b.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">Nenhuma ordem</td></tr>';return}b.innerHTML=o.map(x=>`<tr><td>${x.opened_at?new Date(x.opened_at).toLocaleString('pt-BR'):'—'}</td><td><b>${x.symbol}</b></td><td><span class="badge ${x.type==='buy'?'badge-green':'badge-red'}">${x.type.toUpperCase()}</span></td><td>${x.volume}</td><td>${x.open_price}</td><td>${x.close_price||'—'}</td><td>${x.stop_loss||'—'}</td><td>${x.take_profit||'—'}</td><td style="color:${x.profit>=0?'var(--green)':'var(--red)';font-weight:700}">${x.profit>=0?'+':''}$${x.profit.toFixed(2)}</td></tr>`).join('')}catch(e){}}
+document.getElementById('trailingStop').addEventListener('change',function(){
+  const on=this.checked;
+  document.getElementById('trailingLabel').textContent=on?'Ativado':'Desativado';
+  document.getElementById('trailingPipsGroup').style.display=on?'block':'none';
+});
 
-async function saveProfile(){try{const r=await api('/api/auth/me',{method:'PUT',body:JSON.stringify({name:document.getElementById('settName').value,whatsapp:document.getElementById('settWhatsapp').value})});if(r.id){USER=r;updateUserUI();showToast('✅ Perfil atualizado!')}}catch(e){}}
-async function sendContact(){const n=document.getElementById('contactName').value,e=document.getElementById('contactEmail').value,s=document.getElementById('contactSubject').value,m=document.getElementById('contactMsg').value;if(!n||!e||!m){showToast('Preencha nome, email e mensagem','orange');return}try{const r=await api('/api/contact',{method:'POST',body:JSON.stringify({name:n,email:e,subject:s,message:m})});if(r.ok){showToast('✅ Mensagem enviada!');document.getElementById('contactMsg').value=''}}catch(e){}}
-async function selectPlan(plan){try{const r=await api('/api/subscription/checkout',{method:'POST',body:JSON.stringify({plan})});if(r.checkout_url)window.location.href=r.checkout_url;else showToast('Erro','red')}catch(e){}}
-async function saveMT5Account(){const a=document.getElementById('mt5Account').value,s=document.getElementById('mt5Server').value;if(!a||!s){showToast('Preencha todos os campos','orange');return}try{const r=await api('/api/robots/connect-mt5',{method:'POST',body:JSON.stringify({account_number:a,server:s,balance:0})});if(r.ok){showToast('✅ Conta MT5 conectada!','green');closeModal('connectModal');loadDashboard()}else{showToast('❌ '+(r.detail||'Erro'),'red')}}catch(e){showToast('❌ Erro de conexão','red')}}
+async function saveLotConfig(){
+  const isDynamic=document.getElementById('lotDynamicBtn').style.background.includes('255');
+  const payload={
+    risk_per_trade:parseFloat(document.getElementById('riskRange').value),
+    max_lot:parseFloat(document.getElementById('maxLot').value),
+    stop_loss_pips:parseInt(document.getElementById('slPips').value),
+    take_profit_pips:parseInt(document.getElementById('tpPips').value),
+    lot_multiplier:parseFloat(document.getElementById('lotMult').value),
+    max_daily_trades:parseInt(document.getElementById('maxDailyTrades').value),
+    max_daily_loss:parseFloat(document.getElementById('maxDailyLoss').value),
+    trailing_stop:document.getElementById('trailingStop').checked,
+    trailing_stop_pips:parseInt(document.getElementById('trailingPips').value),
+    use_dynamic_lot:isDynamic,
+    fixed_lot:parseFloat(document.getElementById('fixedLotInput').value)||0.01
+  };
+  if(currentInstanceId){
+    try{
+      const r=await api('/api/robots/settings',{method:'PUT',body:JSON.stringify({instance_id:currentInstanceId,...payload})});
+      if(r.ok){showToast('Configurações salvas! Lote: '+r.calculated_lot);closeModal('lotModal');loadRobots();return}
+    }catch(e){}
+  }else{
+    try{
+      const r=await api('/api/robots/instance',{method:'POST',body:JSON.stringify({robot_id:window._pendingRobotId,mt5_account_id:DASH.accounts[0].id})});
+      if(r.ok||r.instance_id){
+        const instId=r.instance_id||r.id;
+        if(instId)await api('/api/robots/settings',{method:'PUT',body:JSON.stringify({instance_id:instId,...payload})});
+        showToast('Robô ativado!');
+        closeModal('lotModal');loadRobots();loadDashboard();return;
+      }else{showToast(r.detail||'Erro','r')}
+    }catch(e){}
+  }
+  showToast('Erro ao salvar','r');
+}
 
-if(TOKEN){api('/api/auth/me').then(r=>{if(r.id){USER=r;enterDashboard()}else showPage('login')}).catch(()=>showPage('login'))}else showPage('login');
+async function toggleRobot(id){
+  try{
+    const r=await api('/api/robots/toggle',{method:'POST',body:JSON.stringify({instance_id:id})});
+    if(r.ok){showToast(r.is_running?'Robô iniciado!':'Robô parado');loadRobots()}
+  }catch(e){}
+}
 
-async function connectMaster(){const a=document.getElementById('masterAccount').value,s=document.getElementById('masterServer').value;if(!a||!s){showToast('Preencha todos os campos','orange');return}try{const r=await api('/api/copy-trade/connect-master',{method:'POST',body:JSON.stringify({account_number:a,server:s,lot:0.10})});if(r.message){document.getElementById('masterStatus').innerHTML=`<div class="badge badge-green">✅ ${r.message}</div>`;showToast('✅ Conta master conectada!');loadCopyConfigs()}else{showToast('❌ '+(r.detail||'Erro'),'red')}}catch(e){showToast('❌ Erro de conexão','red')}}
-async function connectFollower(){const a=document.getElementById('followerAccount').value,s=document.getElementById('followerServer').value;if(!a||!s){showToast('Preencha todos os campos','orange');return}try{const r=await api('/api/copy-trade/connect-follower',{method:'POST',body:JSON.stringify({account_number:a,server:s,master_config_id:1})});if(r.message){document.getElementById('followerStatus').innerHTML=`<div class="badge badge-green">✅ ${r.message}</div>`;showToast('✅ Conta follower conectada!');loadCopyConfigs()}else{showToast('❌ '+(r.detail||'Erro'),'red')}}catch(e){showToast('❌ Erro de conexão','red')}}
-async function syncTrades(){try{const r=await api('/api/copy-trade/sync',{method:'POST'});if(r.message){showToast('✅ '+r.message)}else{showToast('❌ '+(r.detail||'Erro'),'red')}}catch(e){showToast('❌ Erro de conexão','red')}}
-async function loadCopyConfigs(){try{const r=await api('/api/copy-trade/config');if(r.configs){const c=document.getElementById('copyConfigs');if(r.configs.length===0){c.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:20px">Nenhuma configuração ainda</p>'}else{c.innerHTML=r.configs.map(x=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:var(--bg-card2);border-radius:12px;margin-bottom:8px"><div><div style="font-weight:700">Master: #${x.master.account_number} → Follower: #${x.follower.account_number}</div><div style="font-size:12px;color:var(--text-muted)">${x.master.server} → ${x.follower.server}</div></div><span class="badge ${x.is_active?'badge-green':'badge-red'}">${x.is_active?'● Ativo':'● Inativo'}</span></div>`).join('')}}}catch(e){}}
+async function loadOrders(){
+  try{
+    const o=await api('/api/orders?limit=50');
+    const b=document.getElementById('allOrdersBody');
+    if(!o.length){b.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Nenhuma ordem</td></tr>';return}
+    b.innerHTML=o.map(x=>
+      '<tr><td>'+(x.opened_at?new Date(x.opened_at).toLocaleString('pt-BR'):'—')+'</td><td><b>'+x.symbol+'</b></td><td><span class="badge '+(x.type==='buy'?'bg':'br')+'">'+x.type.toUpperCase()+'</span></td><td>'+x.volume+'</td><td>'+x.open_price+'</td><td>'+(x.close_price||'—')+'</td><td>'+(x.stop_loss||'—')+'</td><td>'+(x.take_profit||'—')+'</td><td style="color:'+(x.profit>=0?'var(--green)':'var(--red)')+';font-weight:700">'+(x.profit>=0?'+':'')+'$'+x.profit.toFixed(2)+'</td></tr>'
+    ).join('');
+  }catch(e){}
+}
+
+async function saveProfile(){
+  try{
+    const r=await api('/api/auth/me',{method:'PUT',body:JSON.stringify({name:document.getElementById('settName').value,whatsapp:document.getElementById('settWhatsapp').value})});
+    if(r.id){USER=r;updateUserUI();showToast('Perfil atualizado!')}
+  }catch(e){}
+}
+
+async function sendContact(){
+  const n=document.getElementById('contactName').value;
+  const e=document.getElementById('contactEmail').value;
+  const s=document.getElementById('contactSubject').value;
+  const m=document.getElementById('contactMsg').value;
+  if(!n||!e||!m){showToast('Preencha nome, email e mensagem','o');return}
+  try{
+    const r=await api('/api/contact',{method:'POST',body:JSON.stringify({name:n,email:e,subject:s,message:m})});
+    if(r.ok){showToast('Mensagem enviada!');document.getElementById('contactMsg').value=''}
+  }catch(e){}
+}
+
+async function selectPlan(plan){
+  try{
+    const r=await api('/api/subscription/checkout',{method:'POST',body:JSON.stringify({plan})});
+    if(r.checkout_url)window.location.href=r.checkout_url;
+    else showToast('Erro','r')
+  }catch(e){}
+}
+
+async function saveMT5Account(){
+  const a=document.getElementById('mt5Account').value;
+  const s=document.getElementById('mt5Server').value;
+  if(!a||!s){showToast('Preencha todos os campos','o');return}
+  try{
+    const r=await api('/api/robots/connect-mt5',{method:'POST',body:JSON.stringify({account_number:a,server:s,balance:0})});
+    if(r.ok){showToast('Conta MT5 conectada!');closeModal('connectModal');loadDashboard()}
+    else{showToast(r.detail||'Erro','r')}
+  }catch(e){showToast('Erro de conexão','r')}
+}
+
+async function connectMaster(){
+  const a=document.getElementById('masterAccount').value;
+  const s=document.getElementById('masterServer').value;
+  if(!a||!s){showToast('Preencha todos os campos','o');return}
+  try{
+    const r=await api('/api/copy-trade/connect-master',{method:'POST',body:JSON.stringify({account_number:a,server:s,lot:0.10})});
+    if(r.message){document.getElementById('masterStatus').innerHTML='<span class="badge bg">'+r.message+'</span>';showToast('Conta master conectada!');loadCopyConfigs()}
+    else{showToast(r.detail||'Erro','r')}
+  }catch(e){showToast('Erro de conexão','r')}
+}
+
+async function connectFollower(){
+  const a=document.getElementById('followerAccount').value;
+  const s=document.getElementById('followerServer').value;
+  if(!a||!s){showToast('Preencha todos os campos','o');return}
+  try{
+    const r=await api('/api/copy-trade/connect-follower',{method:'POST',body:JSON.stringify({account_number:a,server:s,master_config_id:1})});
+    if(r.message){document.getElementById('followerStatus').innerHTML='<span class="badge bg">'+r.message+'</span>';showToast('Conta follower conectada!');loadCopyConfigs()}
+    else{showToast(r.detail||'Erro','r')}
+  }catch(e){showToast('Erro de conexão','r')}
+}
+
+async function syncTrades(){
+  try{
+    const r=await api('/api/copy-trade/sync',{method:'POST'});
+    if(r.message)showToast(r.message);
+    else showToast(r.detail||'Erro','r');
+  }catch(e){showToast('Erro de conexão','r')}
+}
+
+async function loadCopyConfigs(){
+  try{
+    const r=await api('/api/copy-trade/config');
+    if(r.configs){
+      const c=document.getElementById('copyConfigs');
+      if(r.configs.length===0){c.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">Nenhuma configuração ainda</p>'}
+      else{c.innerHTML=r.configs.map(x=>
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:var(--bg3);border-radius:12px;margin-bottom:8px"><div><div style="font-weight:700">Master: #'+x.master.account_number+' → Follower: #'+x.follower.account_number+'</div><div style="font-size:12px;color:var(--muted)">'+x.master.server+' → '+x.follower.server+'</div></div><span class="badge '+(x.is_active?'bg':'br')+'">'+(x.is_active?'● Ativo':'● Inativo')+'</span></div>'
+      ).join('')}
+    }
+  }catch(e){}
+}
+
+if(TOKEN){
+  api('/api/auth/me').then(r=>{if(r.id){USER=r;enterDashboard()}else showPage('login')}).catch(()=>showPage('login'));
+}else{
+  showPage('login');
+}
 </script>
 </body>
 </html>
