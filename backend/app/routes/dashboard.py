@@ -15,7 +15,7 @@ def get_dashboard(user: User = Depends(get_current_user), db: Session = Depends(
     robots = db.query(RobotInstance).filter(RobotInstance.user_id == user.id).all()
     running = [r for r in robots if r.is_running]
 
-    real_accounts = [a for a in all_accounts if 'demo' not in (a.server or '').lower()]
+    real_accounts = all_accounts
 
     total_balance = sum(a.balance for a in real_accounts)
     total_equity = sum(a.equity for a in real_accounts)
