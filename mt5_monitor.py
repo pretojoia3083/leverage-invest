@@ -4,13 +4,9 @@ Sincroniza a conta demo (com PipScalperEA) com o dashboard.
 """
 
 import MetaTrader5 as mt5
-from MetaTrader5 import (
-    TRADE_ACTION_DEAL, ORDER_TYPE_BUY, ORDER_TYPE_SELL,
-    TRADE_RETCODE_DONE, TRADE_RETCODE_PLACED,
-    SYMBOL_ASK, SYMBOL_BID, SYMBOL_VOLUME_MIN, SYMBOL_VOLUME_MAX, SYMBOL_VOLUME_STEP,
-    POSITION_TYPE_BUY, POSITION_TYPE_SELL,
-)
 import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import time
 import json
 import logging
@@ -109,7 +105,7 @@ class MT5Monitor:
         }
 
         try:
-            r = requests.post(f"{API_BASE}/api/mt5/report", json=payload, timeout=60)
+            r = requests.post(f"{API_BASE}/api/mt5/report", json=payload, timeout=60, verify=False)
             if r.status_code == 200:
                 log.info(
                     "Conta %s | Saldo: $%.2f | Equity: $%.2f | Posicoes: %d | Historico: %d",
