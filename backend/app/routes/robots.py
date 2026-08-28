@@ -53,27 +53,35 @@ def list_robots(user: User = Depends(get_current_user), db: Session = Depends(ge
     user_instances = db.query(RobotInstance).filter(RobotInstance.user_id == user.id).all()
     instance_map = {ri.robot_id: ri for ri in user_instances}
 
-    return [{
-        "id": r.id,
-        "name": r.name,
-        "description": r.description,
-        "strategy": r.strategy,
-        "symbols": r.symbols.split(","),
-        "min_plan": r.min_plan,
-        "icon": r.icon,
-        "instance": {
-            "id": inst.id,
-            "is_running": inst.is_running,
-            "profit_total": inst.profit_total,
-            "trades_count": inst.trades_count,
-            "wins_count": inst.wins_count,
-            "losses_count": inst.losses_count,
-            "win_rate": inst.win_rate,
-            "daily_trades_today": inst.daily_trades_today,
-            "daily_pnl": inst.daily_pnl,
-            "settings": inst.get_settings_dict(),
-        } if r.id in instance_map else None,
-    } for r in robots]
+    result = []
+    for r in robots:
+        inst = instance_map.get(r.id)
+        item = {
+            "id": r.id,
+            "name": r.name or "",
+            "description": r.description or "",
+            "strategy": r.strategy or "",
+            "symbols": (r.symbols or "").split(","),
+            "min_plan": r.min_plan or "basic",
+            "icon": r.icon or "🤖",
+        }
+        if inst:
+            item["instance"] = {
+                "id": inst.id,
+                "is_running": inst.is_running,
+                "profit_total": inst.profit_total or 0,
+                "trades_count": inst.trades_count or 0,
+                "wins_count": inst.wins_count or 0,
+                "losses_count": inst.losses_count or 0,
+                "win_rate": inst.win_rate or 0,
+                "daily_trades_today": inst.daily_trades_today or 0,
+                "daily_pnl": inst.daily_pnl or 0,
+                "settings": inst.get_settings_dict(),
+            }
+        else:
+            item["instance"] = None
+        result.append(item)
+    return result
 
 
 class CreateInstanceRequest(BaseModel):
