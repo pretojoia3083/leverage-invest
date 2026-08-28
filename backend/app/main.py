@@ -104,9 +104,17 @@ def health():
     return {"status": "ok", "app": "LEVERAGE INVEST"}
 
 
+@app.get("/login")
+def serve_login():
+    login_path = FRONTEND_DIR / "login.html"
+    if login_path.exists():
+        return FileResponse(login_path)
+    return {"error": "Login page not found"}
+
+
 @app.get("/")
 def serve_frontend():
     index_path = FRONTEND_DIR / "index.html"
     if index_path.exists():
         return FileResponse(index_path)
-    return {"error": "Frontend not found", "path": str(FRONTEND_DIR)}
+    return {"error": "Frontend not found"}

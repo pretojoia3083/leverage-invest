@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEVERAGE INVEST — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--orange:#FF6B00;--lilac:#9B59B6;--bg:#0A0A0F;--bg2:#12121A;--bg3:#1A1A25;--text:#E8E8F0;--muted:#8888A0;--green:#22C55E;--red:#EF4444;--border:rgba(255,255,255,.06)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.fd{font-family:'Space Grotesk',sans-serif}
+.abox{width:100%;max-width:420px}
+.alogo{text-align:center;margin-bottom:32px}
+.alogo-i{width:60px;height:60px;background:linear-gradient(135deg,var(--orange),var(--lilac));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin:0 auto 12px}
+.alogo-t{font-size:24px;font-weight:800}
+.alogo-s{font-size:14px;color:var(--muted);margin-top:4px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+.card-g{box-shadow:0 0 30px rgba(255,107,0,.06),0 0 30px rgba(155,89,182,.06)}
+.fg{margin-bottom:16px}.fl{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.fi{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit}
+.fi:focus{outline:none;border-color:var(--orange)}.fi::placeholder{color:var(--muted)}
+.btn{padding:10px 20px;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.bo{background:linear-gradient(135deg,var(--orange),#E05500);color:#fff}.bo:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,107,0,.3)}
+.bblk{width:100%;justify-content:center}.blg{padding:14px 28px;font-size:16px}
+.af{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}.af a{color:var(--orange);text-decoration:none;font-weight:600}
+.toast{position:fixed;top:24px;right:24px;background:var(--bg2);border-radius:12px;padding:16px 24px;z-index:200;display:none;max-width:400px;box-shadow:0 8px 30px rgba(0,0,0,.4);border:1px solid}
+.toast.tg{border-color:var(--green)}.toast.tr{border-color:var(--red)}
+.fade{animation:fadeIn .4s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.box{display:none}.box.on{display:block}
+</style>
+</head>
+<body>
+
+<div id="box-login" class="box on">
+  <div class="abox fade">
+    <div class="alogo">
+      <div class="alogo-i">LI</div>
+      <div class="alogo-t fd">LEVERAGE <span style="background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent">INVEST</span></div>
+      <div class="alogo-s">Acesse sua conta</div>
+    </div>
+    <div class="card card-g">
+      <div class="fg"><label class="fl">Email</label><input type="email" id="loginEmail" class="fi" placeholder="seu@email.com"></div>
+      <div class="fg"><label class="fl">Senha</label><input type="password" id="loginPassword" class="fi" placeholder="••••••••"></div>
+      <button class="btn bo bblk blg" onclick="doLogin()">Entrar</button>
+      <div id="loginError" style="color:var(--red);font-size:13px;margin-top:12px;text-align:center;display:none"></div>
+    </div>
+    <div class="af">Não tem conta? <a href="#" onclick="toggleForm()">Criar conta</a></div>
+  </div>
+</div>
+
+<div id="box-register" class="box">
+  <div class="abox fade">
+    <div class="alogo">
+      <div class="alogo-i">LI</div>
+      <div class="alogo-t fd">LEVERAGE <span style="background:linear-gradient(90deg,var(--orange),var(--lilac));-webkit-background-clip:text;-webkit-text-fill-color:transparent">INVEST</span></div>
+      <div class="alogo-s">Crie sua conta grátis</div>
+    </div>
+    <div class="card card-g">
+      <div class="fg"><label class="fl">Nome</label><input type="text" id="regName" class="fi" placeholder="Seu nome"></div>
+      <div class="fg"><label class="fl">Email</label><input type="email" id="regEmail" class="fi" placeholder="seu@email.com"></div>
+      <div class="fg"><label class="fl">WhatsApp</label><input type="tel" id="regPhone" class="fi" placeholder="(11) 99999-9999"></div>
+      <div class="fg"><label class="fl">Senha</label><input type="password" id="regPassword" class="fi" placeholder="Mínimo 6 caracteres"></div>
+      <button class="btn bo bblk blg" onclick="doRegister()">Criar conta</button>
+      <div id="regError" style="color:var(--red);font-size:13px;margin-top:12px;text-align:center;display:none"></div>
+    </div>
+    <div class="af">Já tem conta? <a href="#" onclick="toggleForm()">Entrar</a></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"><div id="toastContent"></div></div>
+
+<script>
+var TOKEN=localStorage.getItem('li_token');
+
+if(TOKEN){
+  fetch('/api/auth/me',{headers:{'Authorization':'Bearer '+TOKEN}}).then(function(r){return r.json()}).then(function(r){
+    if(r.id)window.location.href='/';
+  }).catch(function(){});
+}
+
+function toggleForm(){
+  document.getElementById('box-login').classList.toggle('on');
+  document.getElementById('box-register').classList.toggle('on');
+}
+
+function doLogin(){
+  var e=document.getElementById('loginEmail').value;
+  var p=document.getElementById('loginPassword').value;
+  var err=document.getElementById('loginError');
+  if(!e||!p){err.textContent='Preencha todos os campos';err.style.display='block';return}
+  err.style.display='none';
+  fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,password:p})})
+  .then(function(r){return r.json()})
+  .then(function(d){
+    if(d.token){
+      localStorage.setItem('li_token',d.token);
+      window.location.href='/';
+    }else{
+      err.textContent=d.detail||'Erro ao fazer login';
+      err.style.display='block';
+    }
+  }).catch(function(){err.textContent='Erro de conexão';err.style.display='block'});
+}
+
+function doRegister(){
+  var n=document.getElementById('regName').value;
+  var e=document.getElementById('regEmail').value;
+  var p=document.getElementById('regPhone').value;
+  var pw=document.getElementById('regPassword').value;
+  var err=document.getElementById('regError');
+  if(!n||!e||!pw){err.textContent='Preencha nome, email e senha';err.style.display='block';return}
+  err.style.display='none';
+  fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,phone:p,password:pw})})
+  .then(function(r){return r.json()})
+  .then(function(d){
+    if(d.token){
+      localStorage.setItem('li_token',d.token);
+      window.location.href='/';
+    }else{
+      err.textContent=d.detail||'Erro ao criar conta';
+      err.style.display='block';
+    }
+  }).catch(function(){err.textContent='Erro de conexão';err.style.display='block'});
+}
+
+document.getElementById('loginPassword').addEventListener('keydown',function(ev){if(ev.key==='Enter')doLogin()});
+document.getElementById('regPassword').addEventListener('keydown',function(ev){if(ev.key==='Enter')doRegister()});
+</script>
+</body>
+</html>
