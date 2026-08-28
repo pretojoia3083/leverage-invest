@@ -1,0 +1,6 @@
+2026-08-27 23:06:58,411 [ERROR] MT5 initialize: (-10003, 'IPC initialize failed, MetaTrader 5 x64 not found')
+2026-08-27 23:06:58,421 [ERROR] MT5 nao encontrado. Verifique se esta aberto.
+2026-08-27 23:07:32,189 [ERROR] MT5 initialize: (-10003, 'IPC initialize failed, MetaTrader 5 x64 not found')
+2026-08-27 23:07:32,190 [ERROR] MT5 nao encontrado. Verifique se esta aberto.
+2026-08-27 23:09:55,129 [ERROR] MT5 initialize: (-10003, 'IPC initialize failed, MetaTrader 5 x64 not found')
+2026-08-27 23:09:55,130 [ERROR] MT5 nao encontrado. Verifique se esta aberto.

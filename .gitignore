@@ -6,3 +6,5 @@ dist/
 build/
 node_modules/
 .DS_Store
+mt5_config.json
+mt5_monitor.log
